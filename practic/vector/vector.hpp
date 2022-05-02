@@ -9,7 +9,7 @@
 
 namespace ft
 {
-	template<class T, class A = allocator<T> >
+	template<class T, class A = std::allocator<T> >
 	class vector
 	{
 		public:
@@ -21,47 +21,75 @@ namespace ft
 			typedef typename A::const_reference				const_reference;
 			typedef typename A::value_type					value_type;
 
-			typedef T0										iterator;
+			//UTILITY
+			/*typedef T0										iterator;
 			typedef T1										const_iterator;
 			typedef T2										size_type;
 			typedef T3										difference_type;
 
 			typedef reverse_iterator<const_iterator>		const_reverse_iterator;
-			typedef reverse_iterator<iterator>				reverse_iterator;
+			typedef reverse_iterator<iterator>				reverse_iterator;*/ 
 
 
 			// constructors
 
-			vector() : {};
-			explicit vector( const allocator_type& alloc );
-			explicit vector(size_type count, const T& value = T(), const Allocator& alloc = Allocator());
+			vector() : _array(0), _size(0), _cap(0), _alloc(allocator_type()) {} ;
+
+			explicit vector( const allocator_type& alloc ) : _array(0), _size(0), _cap(0), _alloc(alloc) {} ;
+
+			explicit vector(size_t count, const T& value = T(), const allocator_type& alloc = allocator_type()) : 
+			_size(count), _cap(count), _alloc(alloc)
+			{
+				_array = _alloc.allocate(count);
+				for (size_t i = 0; i < _size; ++i)
+				{
+					_alloc.construct(_array + i, value);
+				}
+			}
+
 			template< class InputIt >
-			vector( InputIt first, InputIt last, const Allocator& alloc = Allocator());
+			vector( InputIt first, InputIt last, const allocator_type& alloc = allocator_type()); //ITERATOR
 
 			vector(const vector& other): _size(other._size), _cap(other._cap), _alloc(other._alloc)
 			{
+				_array = _alloc.allocate(_size);
 				for (size_t i = 0; i < _size; ++i)
-					_array[i] = other._array[i];
+				{
+					_alloc.construct(_array + i,  other._array[i]);
+				}
 			};
 
-			/*vector& operator=( const vector& other )
+			vector& operator=( const vector& other )
 			{
-				_c = other._c;
+				clear()
+				reserve(other._cap);
+				_size = other._size;
+				for (size_t i = 0; i < _size; ++i)
+				{
+					_alloc.construct(_array + i, other._array[i]);
+				}
 				return (*this);
-			}*/
+			}
 
-			~vector() {};
+			~vector()
+			{
+				if (_cap)
+				{
+					clear();
+					_alloc.deallocate(_array, _cap);
+				}
+			} 
 
 			allocator_type get_allocator() const
 			{
 				return (_alloc);
 			}
 
-			void assign( size_type count, const T& value );
+			void assign( size_t count, const T& value );
 
 			//element access
 
-			reference at(size_t i) const
+			reference at(size_t i) 
 			{
 				if (i >= _size)
 					throw std::out_of_range{"..."};
@@ -143,8 +171,8 @@ namespace ft
 
 			size_t max_size() const
 			{
-				return (allocator_type.max_size());
-			}
+				return (_alloc.max_size());
+			};
 
 			size_t capacity() const
 			{
@@ -154,72 +182,95 @@ namespace ft
 			void reserve(size_t n) /*If new_cap is greater than capacity(), 
 			all iterators, including the past-the-end iterator, 
 			and all references to the elements are invalidated.*/
-		{
-			if (n <= _cap)
-			return;
-			T* new_arr = reinterpret_cast<T*>(new int8_t[n * sizeof(T)]); //(new char[n * sizeof(T)])
-			size_t i = 0;
-			try
 			{
-				std::uninitialized_copy(_array, _array + _size, new_arr);
+				if (n <= _cap)
+					return;
+				pointer new_arr = _alloc.allocate(n);
+				size_t i = 0;
+				for (; i < _size; ++i)
+				{
+					_alloc.construct(new_arr + i, _array[i]);
+				}
+				for (i = 0; i < _size; ++i)
+					_alloc.destroy(_array + i);
+				_alloc.deallocate(_array, n);
+				_array = new_arr;
+				_cap = n;
 			}
-			catch (...)
-			{
-				delete [] reinterpet_cast<int8_t*>(new_arr);
-				throw;
-			}
-
-			// try
-			// {
-			// 	for (size_t i = 0; i < _size; ++i)
-			// 		new (new_arr + i) T(arr[i]);// placement new
-			// 		// new_arr[i] = arr[i];
-			// }
-			// catch(....)
-			// {
-			// 	for (size_t j = 0; j < i; ++j)
-			// 		(new_arr + i)->~T();//arr[i].~T()
-			// 	delete [] reinterpet_cast<int8_t*>(new_arr);
-			// 	throw;
-			// }
-			for (size_t i = 0; i < _size; ++i)
-				(_array + i)->~T();//arr[i].~T()
-			delete [] reinterpet_cast<int8_t*>(_array);
-			_array = new_arr;
-			_cap = n;
-		}
 
 		// modifiers
 
+		void clear()
+		{
+			if (_size != 0)
+			{
+				for (size_t i = 0; i < _size; ++i)
+					_alloc.destroy(_array + i);
+				_size = 0;
+			}
+		}
+
+		// INSERT
+		/*iterator insert( iterator pos, const T& value );
+		void insert( iterator pos, size_type count, const T& value );
+		template< class InputIt >
+		void insert( iterator pos, InputIt first, InputIt last );*/
+
+		// ERASE
+		/*iterator erase( iterator pos );
+		iterator erase( iterator first, iterator last );*/
+
+		void swap( vector& other )
+		{
+			pointer	array_temp = _array;
+			size_t size_temp(_size);
+			size_t cap_temp(_cap);
+
+			_array = other._array;
+			_size = other._size;
+			_cap = other._cap;
+
+			other._array = array_temp;
+			other._size = size_temp;
+			other._cap = cap_temp;
+		}
+
+
 		void resize(size_t n, const T& value = T())
 		{
-			if (n > cap)
+			if (n > _cap)
 				reserve(n);
-			for (size_t i = sz; i < n; ++i)
-				new(arr + i) T(value);
-			if (n < sz)
-				sz = n;
+			for (size_t i = _size; i < n; ++i)
+				_alloc.construct(_array + i, value);
+			if (n < _size)
+			{
+				for (int j = _size - (_size - n); j < _size; ++j)
+					_alloc.destroy(_array + j);
+			}
+			_size = n;
 		}
 		
 		void push_back(const T& value)
 		{
-			if (cap == sz)
+			if (_size == 0) // mette en reserve
+				reserve(1);
+			else if (_cap == _size)
 			{
-				reserve(2 * sz);
+				reserve(2 * _cap);
 			}
-			new(arr + sz) T(value);
-			// arr[sz] = value;
-			++sz;
+			_alloc.construct(_array + _size, value);
+			++_size;
 		}
 
 		void pop_back()
 		{
-			(arr + sz)->~T();
+			_alloc.destroy(_array + (_size - 1));
+		}
 			
 
 		private:
 
-			T*				_array;
+			pointer			_array;
 			size_t			_size;
 			size_t			_cap;
 			allocator_type	_alloc;
