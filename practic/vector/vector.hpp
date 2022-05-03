@@ -12,6 +12,17 @@ namespace ft
 	template<class T, class A = std::allocator<T> >
 	class vector
 	{
+		class iterator<> : ft::iterator<ft::random_access_iterator_tag,
+
+		{
+			
+
+		}
+
+		class const_iterator<>
+		{
+
+		}
 		public:
 
 			typedef A										allocator_type;
@@ -22,7 +33,7 @@ namespace ft
 			typedef typename A::value_type					value_type;
 
 			//UTILITY
-			/*typedef T0										iterator;
+			/*typedef T0									iterator;
 			typedef T1										const_iterator;
 			typedef T2										size_type;
 			typedef T3										difference_type;
@@ -198,75 +209,100 @@ namespace ft
 				_cap = n;
 			}
 
-		// modifiers
+			// modifiers
 
-		void clear()
-		{
-			if (_size != 0)
+			void clear()
 			{
-				for (size_t i = 0; i < _size; ++i)
-					_alloc.destroy(_array + i);
-				_size = 0;
+				if (_size != 0)
+				{
+					for (size_t i = 0; i < _size; ++i)
+						_alloc.destroy(_array + i);
+					_size = 0;
+				}
 			}
-		}
 
-		// INSERT
-		/*iterator insert( iterator pos, const T& value );
-		void insert( iterator pos, size_type count, const T& value );
-		template< class InputIt >
-		void insert( iterator pos, InputIt first, InputIt last );*/
+			// INSERT
+			/*iterator insert( iterator pos, const T& value );
+			void insert( iterator pos, size_type count, const T& value );
+			template< class InputIt >
+			void insert( iterator pos, InputIt first, InputIt last );*/
 
-		// ERASE
-		/*iterator erase( iterator pos );
-		iterator erase( iterator first, iterator last );*/
+			// ERASE
+			/*iterator erase( iterator pos );
+			iterator erase( iterator first, iterator last );*/
 
-		void swap( vector& other )
-		{
-			pointer	array_temp = _array;
-			size_t size_temp(_size);
-			size_t cap_temp(_cap);
-
-			_array = other._array;
-			_size = other._size;
-			_cap = other._cap;
-
-			other._array = array_temp;
-			other._size = size_temp;
-			other._cap = cap_temp;
-		}
-
-
-		void resize(size_t n, const T& value = T())
-		{
-			if (n > _cap)
-				reserve(n);
-			for (size_t i = _size; i < n; ++i)
-				_alloc.construct(_array + i, value);
-			if (n < _size)
+			void swap( vector& other )
 			{
-				for (int j = _size - (_size - n); j < _size; ++j)
-					_alloc.destroy(_array + j);
-			}
-			_size = n;
-		}
-		
-		void push_back(const T& value)
-		{
-			if (_size == 0) // mette en reserve
-				reserve(1);
-			else if (_cap == _size)
-			{
-				reserve(2 * _cap);
-			}
-			_alloc.construct(_array + _size, value);
-			++_size;
-		}
+				pointer	array_temp = _array;
+				size_t size_temp(_size);
+				size_t cap_temp(_cap);
 
-		void pop_back()
-		{
-			_alloc.destroy(_array + (_size - 1));
-		}
+				_array = other._array;
+				_size = other._size;
+				_cap = other._cap;
+
+				other._array = array_temp;
+				other._size = size_temp;
+				other._cap = cap_temp;
+			}
+
+
+			void resize(size_t n, const T& value = T())
+			{
+				if (n > _cap)
+					reserve(n);
+				for (size_t i = _size; i < n; ++i)
+					_alloc.construct(_array + i, value);
+				if (n < _size)
+				{
+					for (int j = _size - (_size - n); j < _size; ++j)
+						_alloc.destroy(_array + j);
+				}
+				_size = n;
+			}
 			
+			void push_back(const T& value)
+			{
+				if (_size == 0) // mette en reserve
+					reserve(1);
+				else if (_cap == _size)
+				{
+					reserve(2 * _cap);
+				}
+				_alloc.construct(_array + _size, value);
+				++_size;
+			}
+
+			void pop_back()
+			{
+				_alloc.destroy(_array + (_size - 1));
+			}
+			
+			// NON_MEMBER FONCTIONS
+
+			template< class T, class Alloc >
+			friend bool operator==(const ft::vector<T,Alloc>& lhs,
+							const ft::vector<T,Alloc>& rhs);
+
+			template< class T, class Alloc >
+			friend bool operator!=(const ft::vector<T,Alloc>& lhs,
+							const ft::vector<T,Alloc>& rhs);
+
+			/*template< class T, class Alloc >
+			friend bool operator<(const ft::vector<T,Alloc>& lhs,
+							const ft::vector<T,Alloc>& rhs);
+
+			template< class T, class Alloc >
+			friend bool operator<=(const ft::vector<T,Alloc>& lhs,
+							const ft::vector<T,Alloc>& rhs);
+			
+			template< class T, class Alloc >
+			friend bool operator>(const ft::vector<T,Alloc>& lhs,
+							const ft::vector<T,Alloc>& rhs);
+			
+			template< class T, class Alloc >
+			friend bool operator>=(const ft::vector<T,Alloc>& lhs,
+							const ft::vector<T,Alloc>& rhs);*/
 
 		private:
 
@@ -274,7 +310,53 @@ namespace ft
 			size_t			_size;
 			size_t			_cap;
 			allocator_type	_alloc;
-		};
+	};
+
+
+		template< class T, class Alloc >
+		bool operator==(const ft::vector<T,Alloc>& lhs,
+						const ft::vector<T,Alloc>& rhs)
+		{
+			if (lhs._size != rhs._size)
+				return (false);
+			for (size_t i = 0; i < lhs._size; ++i)
+			{
+				if (lhs._array[i] != rhs._array[i])
+					return (false);
+			}
+			return (true);
+		}
+
+
+		template< class T, class Alloc >
+		bool operator!=(const ft::vector<T,Alloc>& lhs,
+						const ft::vector<T,Alloc>& rhs)
+		{
+			if (lhs._size != rhs._size)
+				return (true);
+			for (size_t i = 0; i < lhs._size; ++i)
+			{
+				if (lhs._array[i] != rhs._array[i])
+					return (true);
+			}
+			return (false);
+		}
+
+		/*template< class T, class Alloc >
+		friend bool operator<(const ft::vector<T,Alloc>& lhs,
+						const ft::vector<T,Alloc>& rhs);
+
+		template< class T, class Alloc >
+		friend bool operator<=(const ft::vector<T,Alloc>& lhs,
+						const ft::vector<T,Alloc>& rhs);
+		
+		template< class T, class Alloc >
+		friend bool operator>(const ft::vector<T,Alloc>& lhs,
+						const ft::vector<T,Alloc>& rhs);
+		
+		template< class T, class Alloc >
+		friend bool operator>=(const ft::vector<T,Alloc>& lhs,
+						const ft::vector<T,Alloc>& rhs);*/
 }
 
 # endif
