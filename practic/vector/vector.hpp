@@ -12,8 +12,7 @@ namespace ft
 	template<class T, class A = std::allocator<T> >
 	class vector
 	{
-		class iterator<> : ft::iterator<ft::random_access_iterator_tag,
-
+		class iterator<> : public ft::iterator<ft::random_access_iterator_tag, T>
 		{
 			
 
