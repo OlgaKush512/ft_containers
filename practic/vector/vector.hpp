@@ -15,7 +15,8 @@ namespace ft
 		template<class T>
 		class iterator: public ft::iterator<ft::random_access_iterator_tag, T>
 		{
-			
+			iterator() {};
+			iterator(iterator &other)
 
 		}
 
