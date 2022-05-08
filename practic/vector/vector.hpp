@@ -281,14 +281,6 @@ namespace ft
 			
 			// NON_MEMBER FONCTIONS
 
-			template< class T, class Alloc >
-			friend bool operator==(const ft::vector<T,Alloc>& lhs,
-							const ft::vector<T,Alloc>& rhs);
-
-			template< class T, class Alloc >
-			friend bool operator!=(const ft::vector<T,Alloc>& lhs,
-							const ft::vector<T,Alloc>& rhs);
-
 			/*template< class T, class Alloc >
 			friend bool operator<(const ft::vector<T,Alloc>& lhs,
 							const ft::vector<T,Alloc>& rhs);
@@ -314,50 +306,50 @@ namespace ft
 	};
 
 
-		template< class T, class Alloc >
-		bool operator==(const ft::vector<T,Alloc>& lhs,
-						const ft::vector<T,Alloc>& rhs)
-		{
-			if (lhs._size != rhs._size)
-				return (false);
-			for (size_t i = 0; i < lhs._size; ++i)
-			{
-				if (lhs._array[i] != rhs._array[i])
-					return (false);
-			}
-			return (true);
-		}
-
-
-		template< class T, class Alloc >
-		bool operator!=(const ft::vector<T,Alloc>& lhs,
-						const ft::vector<T,Alloc>& rhs)
-		{
-			if (lhs._size != rhs._size)
-				return (true);
-			for (size_t i = 0; i < lhs._size; ++i)
-			{
-				if (lhs._array[i] != rhs._array[i])
-					return (true);
-			}
+	template< class T, class Alloc >
+	bool operator==(const ft::vector<T,Alloc>& lhs,
+					const ft::vector<T,Alloc>& rhs)
+	{
+		if (lhs.size() != rhs.size())
 			return (false);
+		for (size_t i = 0; i < lhs.size(); ++i)
+		{
+			if (lhs[i] != rhs[i])
+				return (false);
 		}
+		return (true);
+	}
 
-		/*template< class T, class Alloc >
-		friend bool operator<(const ft::vector<T,Alloc>& lhs,
-						const ft::vector<T,Alloc>& rhs);
 
-		template< class T, class Alloc >
-		friend bool operator<=(const ft::vector<T,Alloc>& lhs,
-						const ft::vector<T,Alloc>& rhs);
-		
-		template< class T, class Alloc >
-		friend bool operator>(const ft::vector<T,Alloc>& lhs,
-						const ft::vector<T,Alloc>& rhs);
-		
-		template< class T, class Alloc >
-		friend bool operator>=(const ft::vector<T,Alloc>& lhs,
-						const ft::vector<T,Alloc>& rhs);*/
+	template< class T, class Alloc >
+	bool operator!=(const ft::vector<T,Alloc>& lhs,
+					const ft::vector<T,Alloc>& rhs)
+	{
+		if (lhs.size() != rhs.size())
+			return (true);
+		for (size_t i = 0; i < lhs.size(); ++i)
+		{
+			if (lhs[i] != rhs[i])
+				return (true);
+		}
+		return (false);
+	}
+
+	/*template< class T, class Alloc >
+	friend bool operator<(const ft::vector<T,Alloc>& lhs,
+					const ft::vector<T,Alloc>& rhs);
+
+	template< class T, class Alloc >
+	friend bool operator<=(const ft::vector<T,Alloc>& lhs,
+					const ft::vector<T,Alloc>& rhs);
+	
+	template< class T, class Alloc >
+	friend bool operator>(const ft::vector<T,Alloc>& lhs,
+					const ft::vector<T,Alloc>& rhs);
+	
+	template< class T, class Alloc >
+	friend bool operator>=(const ft::vector<T,Alloc>& lhs,
+					const ft::vector<T,Alloc>& rhs);*/
 }
 
 # endif
