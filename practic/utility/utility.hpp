@@ -81,6 +81,22 @@ namespace ft
 	{
 		return (!(lhs < rhs));
 	}
+/*
+	template <bool B, typename U, typename V>
+	struct conditional
+	{
+		typedef V type;
+	};
+
+	template <typename U, typename V>
+	struct conditional<true, U, V>
+	{
+		typedef U type;
+	};
+
+	template <bool B, typename U, typename V>
+	using conditional_t = typename conditional<B, U, V>::type;
+	*/
 }
 
 #endif

@@ -15,8 +15,147 @@ namespace ft
 		template<class T>
 		class iterator: public ft::iterator<ft::random_access_iterator_tag, T>
 		{
-			iterator() {};
-			iterator(iterator &other)
+			
+			public:
+
+				typedef iterator_traits<Iterator>::value_type			value_type;
+				typedef iterator_traits<Iterator>::difference_type		difference_type;
+				typedef iterator_traits<Iterator>::pointer				pointer;
+				typedef iterator_traits<Iterator>::reference			reference;
+
+
+				// CONSTRUCTORS
+				iterator() {};
+				iterator(pointer ptr) : _current(ptr) {};
+				iterator(iterator<T> &other) : _current(other.base()) {};
+
+				iterator<T>& operator=(iterator<T> &other)
+				{
+					_current = other.base();
+					return (*this);
+				}
+
+				~iterator() {};
+
+				// MEMBER FONCTIONS
+
+				pointer base() const
+				{
+					return (_current);
+				};
+
+				reference operator*() const
+				{
+					return (*_current);
+				};
+
+				pointer operator->() const
+				{
+					return (&**this); //pointer???
+				};
+
+				bool operator==(const reference b)// contextually convertible to bool
+				{
+					return (_current == b._current); // b.base()?
+				};
+
+				bool operator!=(const reference b)// contextually convertible to bool
+				{
+					return (!(*this == b)); // b.base()?
+				};
+				// *a = t?
+				iterator<T>& operator++(); //pre-increment
+				{
+					_current++;
+					return (*this);
+				};
+				
+				iterator  operator++(int) // post-increment
+				{
+					iterator temp = *this;
+					++(*this);
+					return (temp);
+				};
+
+				//*a++;
+
+				iterator& operator--(); //pre-increment
+				{
+					_current--;
+					return (*this);
+				};
+				
+				iterator  operator--(int) // post-increment
+				{
+					iterator temp = *this;
+					--(*this);
+					return (*temp);
+				};
+
+				reference  operator[](difference_type n) // post-increment
+				{
+					return (*(*this + n)); // pourquoi ne pas *(_current * n)
+				};
+
+				iterator& operator+=(difference_type n)
+				{
+					_current += n;
+					// difference_type m = n;
+					// if (n > 0)
+					// {
+					// 	for(difference_type m = n; m >= 0; m--)
+					// 		++_curent;
+					// }
+					// else
+					// 	for(difference_type m = n; m <= 0; m++)
+					// 		--_curent;
+					return (*this);
+				};
+
+				iterator operator+(difference_type n) const
+				{
+					return (iterator(_current + n));
+				};
+
+				iterator operator-=(difference_type n) const
+				{
+					_current -= n;
+					return (*this);
+				};
+
+				iterator operator-(difference_type n)
+				{
+					return (iterator(_current + n));
+				};
+
+				difference_type operator-(const iterator<Iterator>& b)
+				{
+					return (_current - b.base()); // ou bien b._current?
+				};
+
+				bool operator<(const reference b)// contextually convertible to bool
+				{
+					return (_current < b.base()); // b.base()?
+				};
+
+				bool operator>(const reference b)// contextually convertible to bool
+				{
+					return (b.base() < *this); // b.base()?
+				};
+				
+				bool operator<=(const reference b)// contextually convertible to bool
+				{
+					return (!(b.base() < *this)); // b.base()?
+				};
+
+				bool operator>=(const reference b)// contextually convertible to bool
+				{
+					return (!(*this < b.base())); // b.base()?
+				};
+
+			protected:
+
+				pointer	_current;
 
 		}
 
