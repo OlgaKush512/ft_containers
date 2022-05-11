@@ -1,6 +1,7 @@
 NAME		= 	vector
 
-SRCS		=	tester_vector.cpp
+SRCS		=	test.cpp
+# tester_vector.cpp
 
 HEADER		=	vector.hpp
 

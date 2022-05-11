@@ -5,31 +5,32 @@
 # include <memory>
 # include <stdexcept>
 # include <stdint.h>
-
+#include <iostream>
+// # include "../iterator/iterator.hpp"
 
 namespace ft
 {
 	template<class T, class A = std::allocator<T> >
 	class vector
 	{
-		template<class T>
+		/*template<class T>
 		class iterator: public ft::iterator<ft::random_access_iterator_tag, T>
 		{
 			
 			public:
 
-				typedef iterator_traits<Iterator>::value_type			value_type;
-				typedef iterator_traits<Iterator>::difference_type		difference_type;
-				typedef iterator_traits<Iterator>::pointer				pointer;
-				typedef iterator_traits<Iterator>::reference			reference;
+				typedef iterator_traits<iterator>::value_type			value_type;
+				typedef iterator_traits<iterator>::difference_type		difference_type;
+				typedef iterator_traits<iterator>::pointer				pointer;
+				typedef iterator_traits<iterator>::reference			reference;
 
 
 				// CONSTRUCTORS
 				iterator() {};
-				iterator(pointer ptr) : _current(ptr) {};
-				iterator(iterator<T> &other) : _current(other.base()) {};
+				explicit iterator(pointer ptr) : _current(ptr) {};
+				iterator(iterator &other) : _current(other.base()) {};
 
-				iterator<T>& operator=(iterator<T> &other)
+				reference operator=(iterator &other)
 				{
 					_current = other.base();
 					return (*this);
@@ -51,53 +52,56 @@ namespace ft
 
 				pointer operator->() const
 				{
-					return (&**this); //pointer???
+					return (&**this);
 				};
 
-				bool operator==(const reference b)// contextually convertible to bool
+				void operator=(value_type b)
 				{
-					return (_current == b._current); // b.base()?
+					*_current = b;
+				}; //a voir
+
+				bool operator==(const reference b) const
+				{
+					return (_current == b._current);
 				};
 
-				bool operator!=(const reference b)// contextually convertible to bool
+				bool operator!=(const reference b)
 				{
-					return (!(*this == b)); // b.base()?
+					return (!(*this == b));
 				};
-				// *a = t?
-				iterator<T>& operator++(); //pre-increment
+				
+				reference operator++()
 				{
-					_current++;
+					++_current;
 					return (*this);
 				};
 				
-				iterator  operator++(int) // post-increment
+				iterator  operator++(int)
 				{
 					iterator temp = *this;
 					++(*this);
 					return (temp);
 				};
 
-				//*a++;
-
-				iterator& operator--(); //pre-increment
+				iterator& operator--()
 				{
 					_current--;
 					return (*this);
 				};
 				
-				iterator  operator--(int) // post-increment
+				iterator  operator--(int)
 				{
 					iterator temp = *this;
 					--(*this);
 					return (*temp);
 				};
 
-				reference  operator[](difference_type n) // post-increment
+				reference  operator[](difference_type n)
 				{
-					return (*(*this + n)); // pourquoi ne pas *(_current * n)
+					return (*(*this + n)); // pourquoi ne pas *(_current + n)
 				};
 
-				iterator& operator+=(difference_type n)
+				reference operator+=(difference_type n)
 				{
 					_current += n;
 					// difference_type m = n;
@@ -125,32 +129,32 @@ namespace ft
 
 				iterator operator-(difference_type n)
 				{
-					return (iterator(_current + n));
+					return (iterator(_current - n));
 				};
 
-				difference_type operator-(const iterator<Iterator>& b)
+				difference_type operator-(const reference b)
 				{
-					return (_current - b.base()); // ou bien b._current?
+					return (_current - b._current);
 				};
 
-				bool operator<(const reference b)// contextually convertible to bool
+				bool operator<(const reference b)
 				{
-					return (_current < b.base()); // b.base()?
+					return (_current < b._current);
 				};
 
-				bool operator>(const reference b)// contextually convertible to bool
+				bool operator>(const reference b)
 				{
-					return (b.base() < *this); // b.base()?
+					return (b._current < *this);
 				};
 				
-				bool operator<=(const reference b)// contextually convertible to bool
+				bool operator<=(const reference b)
 				{
-					return (!(b.base() < *this)); // b.base()?
+					return (!(b._current < *this));
 				};
 
-				bool operator>=(const reference b)// contextually convertible to bool
+				bool operator>=(const reference b)
 				{
-					return (!(*this < b.base())); // b.base()?
+					return (!(*this < b._current));
 				};
 
 			protected:
@@ -162,8 +166,8 @@ namespace ft
 		template<class T>
 		class const_iterator
 		{
-
-		}
+			;
+		}*/
 		public:
 
 			typedef A										allocator_type;
@@ -213,7 +217,7 @@ namespace ft
 
 			vector& operator=( const vector& other )
 			{
-				clear()
+				clear();
 				reserve(other._cap);
 				_size = other._size;
 				for (size_t i = 0; i < _size; ++i)
@@ -237,21 +241,34 @@ namespace ft
 				return (_alloc);
 			}
 
-			void assign( size_t count, const T& value );
+			// void assign( size_t count, const T& value );
+
+			//iterators
+
+			// iterator begin();
+			// const_iterator begin() const;
+
+			pointer begin() //If the container is empty, 
+			// the returned iterator value shall not be dereferenced
+			{
+				if (!this->empty())
+					return (_array[0]);
+				return (NULL);
+			}
 
 			//element access
 
 			reference at(size_t i) 
 			{
 				if (i >= _size)
-					throw std::out_of_range{"..."};
+					throw std::out_of_range("...");
 				return (_array[i]);
 			}
 
 			const_reference at(size_t i) const
 			{
 				if (i >= _size)
-					throw std::out_of_range{"..."};
+					throw std::out_of_range("...");
 				return (_array[i]);
 			}
 
@@ -268,28 +285,28 @@ namespace ft
 			reference front()
 			{
 				if (!_size)
-					throw std::out_of_range{"The vector is empty"};
+					throw std::out_of_range("The vector is empty");
 				return (_array[0]);
 			}
 
 			const_reference front() const
 			{
 				if (!_size)
-					throw std::out_of_range{"The vector is empty"};
+					throw std::out_of_range("The vector is empty");
 				return (_array[0]);
 			}
 
 			reference back()
 			{
 				if (!_size)
-					throw std::out_of_range{"The vector is empty"};
+					throw std::out_of_range("The vector is empty");
 				return (_array[_size - 1]);
 			}
 
 			const_reference back() const
 			{
 				if (!_size)
-					throw std::out_of_range{"The vector is empty"};
+					throw std::out_of_range("The vector is empty");
 				return (_array[_size - 1]);
 			}
 
@@ -352,6 +369,26 @@ namespace ft
 
 			// modifiers
 
+			/*template <class InputIterator>
+			void assign (InputIterator first, InputIterator last);*/
+
+			void assign(pointer first, pointer last)
+			{
+				size_t tmp_size = 0;
+				for (size_t i = 0; (first + i) != last; ++i)
+					++tmp_size;
+				clear();
+				resize(tmp_size);
+				for (size_t i = 0; i < tmp_size; ++i)
+					*(_array + i) = *(first + i);
+			}
+
+			void assign (size_t n, const value_type& val)
+			{
+				clear();
+				resize(n, val);
+			}
+
 			void clear()
 			{
 				if (_size != 0)
@@ -396,7 +433,7 @@ namespace ft
 					_alloc.construct(_array + i, value);
 				if (n < _size)
 				{
-					for (int j = _size - (_size - n); j < _size; ++j)
+					for (size_t j = _size - (_size - n); j < _size; ++j)
 						_alloc.destroy(_array + j);
 				}
 				_size = n;
