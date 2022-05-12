@@ -1,4 +1,5 @@
 #include <vector>
+#include <iterator>
 #include "vector.hpp"
 #include <iostream>
 
@@ -61,6 +62,59 @@ int main()
 		std::cout << "size : " << v1.size() << " capacity : " << v1.capacity()
 		<< " i : "<< i << " val: "<< v1.at(i) << std::endl << std::endl;
 	}
+
+	N = 5;
+	ft::vector<int> my_v(N);
+	std::vector<int> tr(N);
+	for (size_t i = 0; i < N; i++)
+	{
+		my_v[i] = i;
+		tr[i] = i;
+		// std::cout << "my vector : i : " << i << " val: "<< my_v.at(i) << std::endl << std::endl;
+		// std::cout << "vrai vector : i : " << i << " val: "<< tr.at(i) << std::endl << std::endl;
+
+	}
+	for (size_t i = 0; i < N; i++)
+		std::cout << my_v.at(i) << ' ';
+	std::cout << std::endl << std::endl;
+	for (size_t i = 0; i < N; i++)
+		std::cout << tr.at(i) << ' ';
+	std::cout << std::endl << std::endl;
+	int *ptr_b = my_v.begin();
+	std::vector<int>::iterator it = tr.begin();
+	int *ptr_e = my_v.end();
+	std::vector<int>::iterator it_e = tr.end();
+	std::cout << "my begin() : " << *ptr_b << std::endl;
+	std::cout << "vrai begin() : " << *it << std::endl;
+	std::cout << "my end() : " << *ptr_e << std::endl;
+	std::cout << "vrai end() : " << *it_e << std::endl;
+
+	std::cout << "my front() : " << my_v.front() << std::endl;
+	std::cout << "vrai front() : " << tr.front() << std::endl;
+	std::cout << "my back() : " << my_v.back() << std::endl;
+	std::cout << "vrai back() : " << tr.back() << std::endl;
+	std::cout << "my[0] : " << my_v[0] << std::endl;
+	std::cout << "vrai[0]: " << tr[0] << std::endl;
+	std::cout << "my[N - 1] : " << my_v[N - 1] << std::endl;
+	std::cout << "vrai[N - 1]: " << tr[N - 1] << std::endl;
+
+	my_v.insert(my_v.begin(), 48);
+	tr.insert(tr.begin(), 48);
+	for (size_t i = 0; i < N; i++)
+		std::cout << my_v.at(i) << ' ';
+	std::cout << std::endl << std::endl;
+	for (size_t i = 0; i < N; i++)
+		std::cout << tr.at(i) << ' ';
+	std::cout << std::endl << std::endl;
+
+	my_v.insert(my_v.begin() + 2, 8, 8);
+	tr.insert(tr.begin() + 2, 8, 8);
+	for (size_t i = 0; i < my_v.size(); i++)
+		std::cout << my_v.at(i) << ' ';
+	std::cout << std::endl << std::endl;
+	for (size_t i = 0; i < tr.size(); i++)
+		std::cout << tr.at(i) << ' ';
+	std::cout << std::endl << std::endl;
 	return (0);
 }
 
