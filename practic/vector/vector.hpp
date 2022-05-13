@@ -472,44 +472,49 @@ namespace ft
 			// void insert( iterator pos, InputIt first, InputIt last );
 
 			// // ERASE
-			// iterator erase(iterator pos)
-			// {
-			// 	if (!this->empty())
-			// 	{
-			// 		_alloc.destroy(pos);
-			// 		--_size;
-			// 		if (pos - 1 == this->back())
-			// 			return (this.end());
-			// 		for (iterator it = pos; it != this->back() - 1; ++it)
-			// 			_alloc.construct(it, it + 1);
-			// 		_alloc.destroy(this->back());
-			// 		--_size;
-			// 		return (&(_array[pos]));
-			// 	}
-			// 	//exception?
-			// 	return (this->begin());
-			// }
+			iterator erase(iterator pos)
+			{
+				if (!this->empty())
+				{
+					size_t res = (this->end() - pos);
+					size_t pos_i = _size - res;
+					for (size_t i = 0; i < res; ++i)
+						_array[pos_i + i] = _array[pos_i + i + 1];
+					--_size;
+					_alloc.destroy(_array + _size);
+					return (&(_array[pos_i + 1]));
+				}
+				return (this->begin());
+			}
 
-			// iterator erase( iterator first, iterator last )
-			// {
-			// 	if (first == last)
-			// 		return (last);
-			// 	size_t res = last - first;
-			// 	for (iterator it = first; it != last; ++it)
-			// 	{
-			// 		_alloc.destroy(it);
-			// 		--_size;
-			// 	}
-			// 	size_t size = this->back() - last;
-			// 	for (it = first; size >= 0; ++it, --size)
-			// 		_alloc.construct(it, it + 1);
-			// 	for (it = this->back(); res >= 0; --it, --res)
-			// 		_alloc.destroy(it);
-			// 	if (last == this->back())
-			// 			return (this.end());
-			// 	return (last + 1);
-				
-			// }
+			iterator erase( iterator first, iterator last )
+			{
+				if (first == last)
+					return (last);
+				(void)first;
+				long long	move = (this->end() - last) - 1;
+				long long	erasing = (last - first);
+				long long	pos_i = _size - (last - first) - move;
+
+				std::cout << "move : " << move << std::endl;
+				std::cout << "erasing : " << erasing << std::endl;
+				std::cout << "pos_i : " << pos_i << std::endl;
+
+				// iterator tmp_end = this->end();
+				if (move > 0)
+				{
+					long long i = 0;
+					for (; i < move; ++i)
+						_array[pos_i + i] = _array[pos_i + erasing + i];
+					for (long long j = 0; j < erasing; ++j)
+						// (_array + pos_i + move + j)->~T(); ne marche pas
+						// _array[pos_i + move + j] = 0;
+						_alloc.destroy(_array + pos_i + move + j); // ne marche non plus. voir avec le size non change
+					_size -= erasing;
+					return ((_array + pos_i + move));
+				}
+				return (NULL);				
+			}
 
 			void swap( vector& other )
 			{

@@ -98,6 +98,7 @@ int main()
 	std::cout << "my[N - 1] : " << my_v[N - 1] << std::endl;
 	std::cout << "vrai[N - 1]: " << tr[N - 1] << std::endl;
 
+	std::cout << "___________________TEST du methode insert(iterator pos, const T& value )___________________" << std::endl;
 	my_v.insert(my_v.begin(), 48);
 	tr.insert(tr.begin(), 48);
 	for (size_t i = 0; i < N; i++)
@@ -107,8 +108,42 @@ int main()
 		std::cout << tr.at(i) << ' ';
 	std::cout << std::endl << std::endl;
 
+	std::cout << "___________________TEST du methode insert(iterator pos, size_t count, const T& value)___________________" << std::endl;
+
 	my_v.insert(my_v.begin() + 2, 8, 8);
 	tr.insert(tr.begin() + 2, 8, 8);
+	for (size_t i = 0; i < my_v.size(); i++)
+		std::cout << my_v.at(i) << ' ';
+	std::cout << std::endl << std::endl;
+	for (size_t i = 0; i < tr.size(); i++)
+		std::cout << tr.at(i) << ' ';
+	std::cout << std::endl << std::endl;
+
+	std::cout << "___________________TEST du methode erase(iterator pos)___________________" << std::endl;
+
+	my_v.erase(my_v.begin() + 1);
+	tr.erase(tr.begin() + 1);
+
+	for (size_t i = 0; i < my_v.size(); i++)
+		std::cout << my_v.at(i) << ' ';
+	std::cout << std::endl << std::endl;
+	for (size_t i = 0; i < tr.size(); i++)
+		std::cout << tr.at(i) << ' ';
+	std::cout << std::endl << std::endl;
+
+	// ETRANGE!!!!
+	// ft::vector<int> myne_empty(0);
+	// // std::vector<int> true_empty(0);
+
+	// myne_empty.erase(myne_empty.begin());
+	// // true_empty.erase(true_empty.begin());
+
+	std::cout << "___________________TEST du methode erase(iterator first, iterator last)___________________" << std::endl;
+
+	std::cout << my_v.size() << std::endl;
+	my_v.erase(my_v.begin() + 2, my_v.begin() + 6);
+	tr.erase(tr.begin() + 2, tr.begin() + 6);
+
 	for (size_t i = 0; i < my_v.size(); i++)
 		std::cout << my_v.at(i) << ' ';
 	std::cout << std::endl << std::endl;
