@@ -6,23 +6,23 @@
 # include <stdexcept>
 # include <stdint.h>
 #include <iostream>
-// # include "../iterator/iterator.hpp"
+# include "../iterator/iterator.hpp"
 
 namespace ft
 {
 	template<class T, class A = std::allocator<T> >
 	class vector
 	{
-		/*template<class T>
-		class iterator: public ft::iterator<ft::random_access_iterator_tag, T>
+		template<class U>
+		class iterator: public ft::iterator<ft::random_access_iterator_tag, U>
 		{
 			
 			public:
 
-				typedef iterator_traits<iterator>::value_type			value_type;
-				typedef iterator_traits<iterator>::difference_type		difference_type;
-				typedef iterator_traits<iterator>::pointer				pointer;
-				typedef iterator_traits<iterator>::reference			reference;
+				typedef typename iterator_traits<iterator>::value_type			value_type;
+				typedef typename iterator_traits<iterator>::difference_type		difference_type;
+				typedef typename iterator_traits<iterator>::pointer				pointer;
+				typedef typename iterator_traits<iterator>::reference			reference;
 
 
 				// CONSTRUCTORS
@@ -161,9 +161,9 @@ namespace ft
 
 				pointer	_current;
 
-		}
+		};
 
-		template<class T>
+		/*template<class T>
 		class const_iterator
 		{
 			;
@@ -172,7 +172,7 @@ namespace ft
 
 			typedef A										allocator_type;
 			typedef typename A::pointer						pointer;
-			typedef typename A::pointer						iterator;
+			typedef typename A::pointer						common_iterator;
 			typedef typename A::const_pointer				const_pointer;
 			typedef typename A::reference					reference;
 			typedef typename A::const_reference				const_reference;
@@ -246,7 +246,7 @@ namespace ft
 
 			//ITERATORS
 
-			iterator begin() //If the container is empty, 
+			common_iterator begin() //If the container is empty, 
 			// the returned iterator value shall not be dereferenced
 			{
 				if (!this->empty())
@@ -255,7 +255,7 @@ namespace ft
 			}
 			// const_iterator begin() const;
 
-			iterator end()
+			common_iterator end()
 			{
 				if (!this->empty())
 					return (&_array[_size]);
@@ -399,7 +399,7 @@ namespace ft
 			/*template <class InputIterator>
 			void assign (InputIterator first, InputIterator last);*/
 
-			void assign(iterator first, iterator last)
+			void assign(common_iterator first, common_iterator last)
 			{
 				size_t tmp_size = 0;
 				for (size_t i = 0; (first + i) != last; ++i)
@@ -427,7 +427,7 @@ namespace ft
 			}
 
 			// INSERT
-			iterator insert(iterator pos, const T& value )
+			common_iterator insert(common_iterator pos, const T& value )
 			{
 				if (this->empty())
 				{
@@ -446,7 +446,7 @@ namespace ft
 				return (&_array[pos_i]);
 			}
 
-			void insert( iterator pos, size_t count, const T& value )
+			void insert( common_iterator pos, size_t count, const T& value )
 			{
 				if (count == 0)
 					return;
@@ -472,7 +472,7 @@ namespace ft
 			// void insert( iterator pos, InputIt first, InputIt last );
 
 			// // ERASE
-			iterator erase(iterator pos)
+			common_iterator erase(common_iterator pos)
 			{
 				if (!this->empty())
 				{
@@ -487,7 +487,7 @@ namespace ft
 				return (this->begin());
 			}
 
-			iterator erase( iterator first, iterator last )
+			common_iterator erase( common_iterator first, common_iterator last )
 			{
 				if (first == last)
 					return (last);

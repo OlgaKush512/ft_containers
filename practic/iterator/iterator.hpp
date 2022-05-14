@@ -23,11 +23,11 @@ namespace ft
 	template< class Iterator >
 	struct iterator_traits
 	{
-		typedef Iterator::iterator_category	iterator_category;
-		typedef Iterator::value_type		value_type;
-		typedef Iterator::difference_type	difference_type;
-		typedef Iterator::pointer			pointer;
-		typedef Iterator::reference			reference;
+		typedef typename Iterator::iterator_category	iterator_category;
+		typedef typename Iterator::value_type		value_type;
+		typedef typename Iterator::difference_type	difference_type;
+		typedef typename Iterator::pointer			pointer;
+		typedef typename Iterator::reference			reference;
 	};
 
 	template< class T >
@@ -56,17 +56,17 @@ namespace ft
 		public:
 
 			typedef Iterator										iterator_type;
-			typedef iterator_traits<Iterator>::iterator_category	iterator_category;
-			typedef iterator_traits<Iterator>::value_type			value_type;
-			typedef iterator_traits<Iterator>::difference_type		difference_type;
-			typedef iterator_traits<Iterator>::pointer				pointer;
-			typedef iterator_traits<Iterator>::reference			reference;
+			typedef typename iterator_traits<Iterator>::iterator_category	iterator_category;
+			typedef typename iterator_traits<Iterator>::value_type			value_type;
+			typedef typename iterator_traits<Iterator>::difference_type		difference_type;
+			typedef typename iterator_traits<Iterator>::pointer				pointer;
+			typedef typename iterator_traits<Iterator>::reference			reference;
 
 			//CONSTRUCTORS
 			reverse_iterator();
 			explicit reverse_iterator (iterator_type it) : _current(it) {};
-			template <class Iterator>
-			reverse_iterator (const reverse_iterator<Iterator>& rev_it) : _current(rev_it.base());
+			// template <class Iterator>
+			reverse_iterator (const reverse_iterator<Iterator>& rev_it) : _current(rev_it.base()) {};
 
 			template< class U >
 			reverse_iterator& operator=( const reverse_iterator<U>& other )
@@ -98,7 +98,7 @@ namespace ft
 				return (reverse_iterator(base() - n));
 			};
 
-			reverse_iterator& operator++(); //pre-increment
+			reverse_iterator& operator++() //pre-increment
 			{
 				_current--;
 				return (*this);
