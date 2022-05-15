@@ -14,94 +14,94 @@ namespace ft
 	class vector
 	{
 		template<class U>
-		class iterator: public ft::iterator<ft::random_access_iterator_tag, U>
+		class RandomAccessIterator: public ft::iterator<ft::random_access_iterator_tag, U>
 		{
 			
 			public:
 
-				typedef typename iterator_traits<iterator>::value_type			value_type;
-				typedef typename iterator_traits<iterator>::difference_type		difference_type;
-				typedef typename iterator_traits<iterator>::pointer				pointer;
-				typedef typename iterator_traits<iterator>::reference			reference;
+				// typedef typename iterator_traits<iterator>::value_type			value_type;
+				typedef typename iterator_traits<U*>::difference_type		difference_type;
+				// typedef typename iterator_traits<iterator>::pointer				pointer;
+				// typedef typename iterator_traits<iterator>::reference			reference;
 
 
 				// CONSTRUCTORS
-				iterator() {};
-				explicit iterator(pointer ptr) : _current(ptr) {};
-				iterator(iterator &other) : _current(other.base()) {};
+				RandomAccessIterator() {};
+				explicit RandomAccessIterator(U* const ptr) : _current(ptr) {};
+				RandomAccessIterator(RandomAccessIterator const &other) : _current(other.base()) {};
 
-				reference operator=(iterator &other)
+				RandomAccessIterator& operator=(RandomAccessIterator const &other)
 				{
 					_current = other.base();
 					return (*this);
 				}
 
-				~iterator() {};
+				~RandomAccessIterator() {};
 
 				// MEMBER FONCTIONS
 
-				pointer base() const
+				U* base() const
 				{
 					return (_current);
 				};
 
-				reference operator*() const
+				U& operator*() const
 				{
 					return (*_current);
 				};
 
-				pointer operator->() const
+				U* operator->() const
 				{
 					return (&**this);
 				};
 
-				void operator=(value_type b)
+				void operator=(U b)
 				{
 					*_current = b;
 				}; //a voir
 
-				bool operator==(const reference b) const
+				bool operator==(const RandomAccessIterator& b) const
 				{
 					return (_current == b._current);
 				};
 
-				bool operator!=(const reference b)
+				bool operator!=(const RandomAccessIterator& b)
 				{
 					return (!(*this == b));
 				};
 				
-				reference operator++()
+				RandomAccessIterator& operator++()
 				{
 					++_current;
 					return (*this);
 				};
 				
-				iterator  operator++(int)
+				RandomAccessIterator  operator++(int)
 				{
-					iterator temp = *this;
+					RandomAccessIterator temp = *this;
 					++(*this);
 					return (temp);
 				};
 
-				iterator& operator--()
+				RandomAccessIterator& operator--()
 				{
 					_current--;
 					return (*this);
 				};
 				
-				iterator  operator--(int)
+				RandomAccessIterator  operator--(int)
 				{
-					iterator temp = *this;
+					RandomAccessIterator temp = *this;
 					--(*this);
 					return (*temp);
 				};
 
-				reference  operator[](difference_type n)
+				U&  operator[](difference_type n)
 				{
 					return (*(*this + n)); // pourquoi ne pas *(_current + n)
 				};
 
-				reference operator+=(difference_type n)
+				RandomAccessIterator& operator+=(difference_type n)
 				{
 					_current += n;
 					// difference_type m = n;
@@ -116,50 +116,50 @@ namespace ft
 					return (*this);
 				};
 
-				iterator operator+(difference_type n) const
+				RandomAccessIterator operator+(difference_type n) const
 				{
-					return (iterator(_current + n));
+					return (RandomAccessIterator(_current + n));
 				};
 
-				iterator operator-=(difference_type n) const
+				RandomAccessIterator operator-=(difference_type n) const
 				{
 					_current -= n;
 					return (*this);
 				};
 
-				iterator operator-(difference_type n)
+				RandomAccessIterator operator-(difference_type n)
 				{
-					return (iterator(_current - n));
+					return (RandomAccessIterator(_current - n));
 				};
 
-				difference_type operator-(const reference b)
+				difference_type operator-(const RandomAccessIterator& b)
 				{
 					return (_current - b._current);
 				};
 
-				bool operator<(const reference b)
+				bool operator<(const RandomAccessIterator& b)
 				{
 					return (_current < b._current);
 				};
 
-				bool operator>(const reference b)
+				bool operator>(const RandomAccessIterator& b)
 				{
 					return (b._current < *this);
 				};
 				
-				bool operator<=(const reference b)
+				bool operator<=(const RandomAccessIterator& b)
 				{
 					return (!(b._current < *this));
 				};
 
-				bool operator>=(const reference b)
+				bool operator>=(const RandomAccessIterator& b)
 				{
 					return (!(*this < b._current));
 				};
 
 			protected:
 
-				pointer	_current;
+				U*	_current;
 
 		};
 
@@ -172,7 +172,7 @@ namespace ft
 
 			typedef A										allocator_type;
 			typedef typename A::pointer						pointer;
-			typedef typename A::pointer						common_iterator;
+			typedef RandomAccessIterator<T>		common_iterator;
 			typedef typename A::const_pointer				const_pointer;
 			typedef typename A::reference					reference;
 			typedef typename A::const_reference				const_reference;
@@ -249,16 +249,18 @@ namespace ft
 			common_iterator begin() //If the container is empty, 
 			// the returned iterator value shall not be dereferenced
 			{
-				if (!this->empty())
-					return (&_array[0]);
-				return (NULL);
+				common_iterator it(&_array[0]);
+				// if (!this->empty())
+					return (it);
+				// return common_iterator((void*)0);
 			}
 			// const_iterator begin() const;
 
 			common_iterator end()
 			{
+				common_iterator it(&_array[_size]);
 				if (!this->empty())
-					return (&_array[_size]);
+					return (it);
 				return (this->begin());
 			}
 			// const_iterator end() const;
@@ -443,7 +445,7 @@ namespace ft
 					_array[_size - i] = _array[_size - i - 1];
 				++_size;
 				_array[pos_i] = value;
-				return (&_array[pos_i]);
+				return (common_iterator(&_array[pos_i]));
 			}
 
 			void insert( common_iterator pos, size_t count, const T& value )
@@ -482,7 +484,7 @@ namespace ft
 						_array[pos_i + i] = _array[pos_i + i + 1];
 					--_size;
 					_alloc.destroy(_array + _size);
-					return (&(_array[pos_i + 1]));
+					return (common_iterator(&(_array[pos_i + 1])));
 				}
 				return (this->begin());
 			}
@@ -501,8 +503,8 @@ namespace ft
 				std::cout << "pos_i : " << pos_i << std::endl;
 
 				// iterator tmp_end = this->end();
-				if (move > 0)
-				{
+				// if (move > 0)
+				// {
 					long long i = 0;
 					for (; i < move; ++i)
 						_array[pos_i + i] = _array[pos_i + erasing + i];
@@ -511,9 +513,9 @@ namespace ft
 						// _array[pos_i + move + j] = 0;
 						_alloc.destroy(_array + pos_i + move + j); // ne marche non plus. voir avec le size non change
 					_size -= erasing;
-					return ((_array + pos_i + move));
-				}
-				return (NULL);				
+					return (common_iterator(_array + pos_i + move));
+				// }
+				// return (NULL);				
 			}
 
 			void swap( vector& other )
