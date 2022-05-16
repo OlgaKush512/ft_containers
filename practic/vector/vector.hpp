@@ -19,15 +19,15 @@ namespace ft
 			
 			public:
 
-				// typedef typename iterator_traits<iterator>::value_type			value_type;
+				typedef typename iterator_traits<U*>::value_type			value_type;
 				typedef typename iterator_traits<U*>::difference_type		difference_type;
-				// typedef typename iterator_traits<iterator>::pointer				pointer;
-				// typedef typename iterator_traits<iterator>::reference			reference;
+				typedef typename iterator_traits<U*>::pointer				pointer;
+				typedef typename iterator_traits<U*>::reference				reference;
 
 
 				// CONSTRUCTORS
 				RandomAccessIterator() {};
-				explicit RandomAccessIterator(U* const ptr) : _current(ptr) {};
+				explicit RandomAccessIterator(pointer const ptr) : _current(ptr) {};
 				RandomAccessIterator(RandomAccessIterator const &other) : _current(other.base()) {};
 
 				RandomAccessIterator& operator=(RandomAccessIterator const &other)
@@ -40,25 +40,20 @@ namespace ft
 
 				// MEMBER FONCTIONS
 
-				U* base() const
+				pointer base() const
 				{
 					return (_current);
 				};
 
-				U& operator*() const
+				reference operator*() const
 				{
 					return (*_current);
 				};
 
-				U* operator->() const
+				pointer operator->() const
 				{
 					return (&**this);
 				};
-
-				void operator=(U b)
-				{
-					*_current = b;
-				}; //a voir
 
 				bool operator==(const RandomAccessIterator& b) const
 				{
@@ -96,23 +91,14 @@ namespace ft
 					return (*temp);
 				};
 
-				U&  operator[](difference_type n)
+				reference  operator[](difference_type n)
 				{
-					return (*(*this + n)); // pourquoi ne pas *(_current + n)
+					return (*(*this + n));
 				};
 
 				RandomAccessIterator& operator+=(difference_type n)
 				{
 					_current += n;
-					// difference_type m = n;
-					// if (n > 0)
-					// {
-					// 	for(difference_type m = n; m >= 0; m--)
-					// 		++_curent;
-					// }
-					// else
-					// 	for(difference_type m = n; m <= 0; m++)
-					// 		--_curent;
 					return (*this);
 				};
 
@@ -159,7 +145,7 @@ namespace ft
 
 			protected:
 
-				U*	_current;
+				pointer	_current;
 
 		};
 
@@ -172,7 +158,8 @@ namespace ft
 
 			typedef A										allocator_type;
 			typedef typename A::pointer						pointer;
-			typedef RandomAccessIterator<T>		common_iterator;
+			typedef RandomAccessIterator<T>					iterator;
+			typedef RandomAccessIterator<const T>			const_iterator;
 			typedef typename A::const_pointer				const_pointer;
 			typedef typename A::reference					reference;
 			typedef typename A::const_reference				const_reference;
@@ -246,19 +233,19 @@ namespace ft
 
 			//ITERATORS
 
-			common_iterator begin() //If the container is empty, 
+			iterator begin() //If the container is empty, 
 			// the returned iterator value shall not be dereferenced
 			{
-				common_iterator it(&_array[0]);
+				iterator it(&_array[0]);
 				// if (!this->empty())
 					return (it);
-				// return common_iterator((void*)0);
+				// return iterator((void*)0);
 			}
 			// const_iterator begin() const;
 
-			common_iterator end()
+			iterator end()
 			{
-				common_iterator it(&_array[_size]);
+				iterator it(&_array[_size]);
 				if (!this->empty())
 					return (it);
 				return (this->begin());
@@ -401,7 +388,7 @@ namespace ft
 			/*template <class InputIterator>
 			void assign (InputIterator first, InputIterator last);*/
 
-			void assign(common_iterator first, common_iterator last)
+			void assign(iterator first, iterator last)
 			{
 				size_t tmp_size = 0;
 				for (size_t i = 0; (first + i) != last; ++i)
@@ -429,7 +416,7 @@ namespace ft
 			}
 
 			// INSERT
-			common_iterator insert(common_iterator pos, const T& value )
+			iterator insert(iterator pos, const T& value )
 			{
 				if (this->empty())
 				{
@@ -445,10 +432,10 @@ namespace ft
 					_array[_size - i] = _array[_size - i - 1];
 				++_size;
 				_array[pos_i] = value;
-				return (common_iterator(&_array[pos_i]));
+				return (iterator(&_array[pos_i]));
 			}
 
-			void insert( common_iterator pos, size_t count, const T& value )
+			void insert( iterator pos, size_t count, const T& value )
 			{
 				if (count == 0)
 					return;
@@ -474,7 +461,7 @@ namespace ft
 			// void insert( iterator pos, InputIt first, InputIt last );
 
 			// // ERASE
-			common_iterator erase(common_iterator pos)
+			iterator erase(iterator pos)
 			{
 				if (!this->empty())
 				{
@@ -484,12 +471,12 @@ namespace ft
 						_array[pos_i + i] = _array[pos_i + i + 1];
 					--_size;
 					_alloc.destroy(_array + _size);
-					return (common_iterator(&(_array[pos_i + 1])));
+					return (iterator(&(_array[pos_i + 1])));
 				}
 				return (this->begin());
 			}
 
-			common_iterator erase( common_iterator first, common_iterator last )
+			iterator erase( iterator first, iterator last )
 			{
 				if (first == last)
 					return (last);
@@ -513,7 +500,7 @@ namespace ft
 						// _array[pos_i + move + j] = 0;
 						_alloc.destroy(_array + pos_i + move + j); // ne marche non plus. voir avec le size non change
 					_size -= erasing;
-					return (common_iterator(_array + pos_i + move));
+					return (iterator(_array + pos_i + move));
 				// }
 				// return (NULL);				
 			}

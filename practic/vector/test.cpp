@@ -80,9 +80,9 @@ int main()
 	for (size_t i = 0; i < N; i++)
 		std::cout << tr.at(i) << ' ';
 	std::cout << std::endl << std::endl;
-	ft::vector<int>::common_iterator ptr_b = my_v.begin();
+	ft::vector<int>::iterator ptr_b = my_v.begin();
 	std::vector<int>::iterator it = tr.begin();
-	ft::vector<int>::common_iterator ptr_e = my_v.end();
+	ft::vector<int>::iterator ptr_e = my_v.end();
 	std::vector<int>::iterator it_e = tr.end();
 	std::cout << "my begin() : " << *ptr_b << std::endl;
 	std::cout << "vrai begin() : " << *it << std::endl;
@@ -150,6 +150,18 @@ int main()
 	for (size_t i = 0; i < tr.size(); i++)
 		std::cout << tr.at(i) << ' ';
 	std::cout << std::endl << std::endl;
+
+	std::cout << "___________________TEST du operator=(value_type b) d'iterator___________________" << std::endl;
+
+	ft::vector<int>::iterator it2;
+	it2 = my_v.begin() + 2;
+
+	std::cout << *it2 << std::endl;
+
+	*it2 = 2;
+
+	for (size_t i = 0; i < my_v.size(); i++)
+		std::cout << my_v.at(i) << ' ';
 	return (0);
 }
 
