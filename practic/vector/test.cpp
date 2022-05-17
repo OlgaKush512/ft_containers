@@ -5,14 +5,23 @@
 
 int main()
 {
-	size_t N = 5;
+	size_t N = 0;
 	ft::vector<char> v(N);
 	std::vector<char> gr(N);
 
 
+
 	std::cout << "size : " << v.size() << " capacity : " << v.capacity() << std::endl;
 
-	for (size_t i = 0 ; i < N; ++i)
+	v.begin();
+	gr.begin();
+
+	gr.resize(10);
+
+	// std::cout << "v.begin(); " << *v.begin() << std::endl;
+	// std::cout << "gr.begin()" << *gr.begin()<< std::endl;
+
+	/* for (size_t i = 0 ; i < N; ++i)
 	{
 		v.push_back('x');
 		std::cout << "size : " << v.size() << " capacity : " << v.capacity() << std::endl;
@@ -161,7 +170,7 @@ int main()
 	*it2 = 2;
 
 	for (size_t i = 0; i < my_v.size(); i++)
-		std::cout << my_v.at(i) << ' ';
+		std::cout << my_v.at(i) << ' '; */
 	return (0);
 }
 
