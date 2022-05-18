@@ -184,10 +184,11 @@ namespace ft
 					_alloc.construct(_array + i, value);
 				}
 			}
-			/*_____________________________________________________________________________________________________*/
 			template< class InputIt >
-			vector( InputIt first, InputIt last, const allocator_type& alloc = allocator_type()); //ITERATOR
-			/*_____________________________________________________________________________________________________*/
+			vector( InputIt first, InputIt last, const allocator_type& alloc = allocator_type()) : _array(0), _size(0), _cap(0), _alloc(alloc)
+			{
+				this->assign(first, last);
+			}
 
 
 
@@ -234,7 +235,6 @@ namespace ft
 				return (_alloc);
 			}
 
-
 			//ITERATORS
 
 			iterator begin()
@@ -244,17 +244,17 @@ namespace ft
 
 			const_iterator begin() const
 			{
-				return (_array);
+				return (const_iterator(_array));
 			}
 
 			iterator end()
 			{
-				return (_array + _size);
+				return (iterator(_array + _size));
 			}
 
 			const_iterator end() const
 			{
-				return (_array + _size);
+				return (const_iterator(_array + _size));
 			}
 
 			reverse_iterator rbegin()
@@ -350,7 +350,7 @@ namespace ft
 				return (_cap);
 			}
 
-			void resize(size_type n, const T& value = T()) // autre version void resize (size_type n, value_type val = value_type());
+			void resize(size_type n, value_type value = value_type())
 			{
 				if (n > _cap)
 					reserve(n);
@@ -473,7 +473,7 @@ namespace ft
 				size_type pos_i = _size - res;
 				if ((_size + count) > _cap)
 					reserve(2 * _cap);
-				for (size_type i = 0; i < res + count; ++i)
+				for (size_type i = 0; i < count; ++i)
 					_alloc.construct(_array + _size + i , value);
 				for (size_type i = 0; i < res; ++i)
 					_array[_size - i - 1 + count] = _array[_size - i - 1];
@@ -484,7 +484,20 @@ namespace ft
 
 			
 			// template< class InputIt >
-			// void insert( iterator pos, InputIt first, InputIt last );
+			// void insert( iterator pos, InputIt first, InputIt last )
+			// {
+
+			// }
+
+			// template<typename _InputIterator>
+			// void
+			// insert(iterator __position, _InputIterator __first,
+			// 	_InputIterator __last)
+			// {
+			// // Check whether it's an integral type.  If so, it's not an iterator.
+			// typedef typename std::__is_integer<_InputIterator>::__type _Integral;
+			// _M_insert_dispatch(__position, __first, __last, _Integral());
+	
 
 			// // ERASE
 			iterator erase(iterator pos)
@@ -506,29 +519,21 @@ namespace ft
 			{
 				if (first == last)
 					return (last);
-				(void)first;
-				long long	move = (this->end() - last) - 1;
+				long long	move = (this->end() - last);
 				long long	erasing = (last - first);
-				long long	pos_i = _size - (last - first) - move;
+				long long	pos_i = _size - erasing - move;
 
 				std::cout << "move : " << move << std::endl;
 				std::cout << "erasing : " << erasing << std::endl;
 				std::cout << "pos_i : " << pos_i << std::endl;
 
-				// iterator tmp_end = this->end();
-				// if (move > 0)
-				// {
-					long long i = 0;
-					for (; i < move; ++i)
-						_array[pos_i + i] = _array[pos_i + erasing + i];
-					for (long long j = 0; j < erasing; ++j)
-						// (_array + pos_i + move + j)->~T(); ne marche pas
-						// _array[pos_i + move + j] = 0;
-						_alloc.destroy(_array + pos_i + move + j); // ne marche non plus. voir avec le size non change
-					_size -= erasing;
-					return (iterator(_array + pos_i + move));
-				// }
-				// return (NULL);				
+				long long i = 0;
+				for (; i < move; ++i)
+					_array[pos_i + i] = _array[pos_i + erasing + i];
+				for (long long j = 0; j < erasing; ++j)
+					_alloc.destroy(_array + pos_i + move + j); // ne marche non plus. voir avec le size non change
+				_size -= erasing;
+				return (iterator(_array + pos_i + move));			
 			}
 
 			void swap(vector& other)

@@ -1,7 +1,26 @@
-#include <vector>
-#include <iterator>
+#ifdef STD
+ #include <vector>
+ #include <map>
+ #include <stack>
+ namespace ft = std;
+#else
+//  #include "vector.hpp"
+//#include "map.hpp"
+//#include "stack.hpp"
 #include "vector.hpp"
+#endif
+
+
+#include <utility>
+#include <string>
 #include <iostream>
+
+/* _________________________ */
+
+// #include <vector>
+// #include <iterator>
+#include "vector.hpp"
+// #include <iostream>
 
 class Lala {
 	public:
@@ -15,7 +34,7 @@ int main()
 {
 	size_t N = 5;
 	ft::vector<char> v(N);
-	std::vector<char> gr(N);
+	ft::vector<char> gr(N);
 
 
 
@@ -82,7 +101,7 @@ int main()
 
 	N = 5;
 	ft::vector<int> my_v(N);
-	std::vector<int> tr(N);
+	ft::vector<int> tr(N);
 	for (size_t i = 0; i < N; i++)
 	{
 		my_v[i] = i;
@@ -98,9 +117,9 @@ int main()
 		std::cout << tr.at(i) << ' ';
 	std::cout << std::endl << std::endl;
 	ft::vector<int>::iterator ptr_b = my_v.begin();
-	std::vector<int>::iterator it = tr.begin();
+	ft::vector<int>::iterator it = tr.begin();
 	ft::vector<int>::iterator ptr_e = my_v.end();
-	std::vector<int>::iterator it_e = tr.end();
+	ft::vector<int>::iterator it_e = tr.end();
 	std::cout << "my begin() : " << *ptr_b << std::endl;
 	std::cout << "vrai begin() : " << *it << std::endl;
 	std::cout << "my end() : " << *ptr_e << std::endl;
@@ -170,7 +189,7 @@ int main()
 
 
 
-	std::vector<Lala> lala(4);
+	ft::vector<Lala> lala(4);
 
 	lala.resize(1);
 
