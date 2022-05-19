@@ -5,8 +5,10 @@
 # include <memory>
 # include <stdexcept>
 # include <stdint.h>
-#include <iostream>
+# include <iostream>
 # include "../iterator/iterator.hpp"
+# include "../type_traits/type_traits.hpp"
+
 
 namespace ft
 {
@@ -131,17 +133,17 @@ namespace ft
 
 				bool operator>(const RandomAccessIterator& b)
 				{
-					return (b._current < *this);
+					return (b._current < _current);
 				};
 				
 				bool operator<=(const RandomAccessIterator& b)
 				{
-					return (!(b._current < *this));
+					return (!(b._current < _current));
 				};
 
 				bool operator>=(const RandomAccessIterator& b)
 				{
-					return (!(*this < b._current));
+					return (!(_current < b._current));
 				};
 
 			protected:
@@ -396,7 +398,7 @@ namespace ft
 			/*_____________________________________________________________________________________________________*/
 
 			template <class InputIterator>
-			void assign(InputIterator first, InputIterator last)
+			void assign(typename ft::enable_if<!is_integral<InputIterator>::value, InputIterator>::type first, InputIterator last)
 			{
 				size_type tmp_size = 0;
 				for (size_type i = 0; (first + i) != last; ++i)
@@ -482,12 +484,32 @@ namespace ft
 					_array[pos_i + i] = value;
 			}
 
-			
-			// template< class InputIt >
-			// void insert( iterator pos, InputIt first, InputIt last )
-			// {
-
-			// }
+			template <class InputIt>
+			void insert( iterator pos, typename ft::enable_if<!is_integral<InputIt>::value, InputIt>::type first, InputIt last)
+			{
+				if (pos < this->begin() || pos >= this->end())
+					return; //error?
+				if (first > last)
+					return; //error?
+				size_t count = last - first;
+				size_type move = (this->end() - pos - 1);
+				// size_type pos_i = _size - move - 1;
+				std::cout << "count: " << count << std::endl;
+				std::cout << "move: " << move << std::endl;
+				// std::cout << "pos_i: " << pos_i << std::endl;
+				if ((_size + count) > _cap)
+					reserve(2 * _cap);
+				for (size_type i = 0; i < count; ++i)
+					_alloc.construct(_array + _size + i , 0);
+				std::cout << "move: " << move << std::endl;
+				for (size_type i = 0; i < move; ++i){
+					_array[_size - i - 1 + count] = _array[_size - i - 1];
+					std::cout << "moved: " << _array[_size - i - 1 + count] << std::endl;
+				}
+				_size += count;
+				// for (size_type i = 0; first < last; ++first, ++i)
+				// 	_array[pos_i + i] = *first;
+			}
 
 			// template<typename _InputIterator>
 			// void

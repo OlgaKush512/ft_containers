@@ -54,6 +54,8 @@
 		"__split_buffer": "cpp",
 		"__tree": "cpp",
 		"bitset": "cpp",
-		"hashtable": "cpp"
+		"hashtable": "cpp",
+		"map": "cpp",
+		"cinttypes": "cpp"
 	}
 }

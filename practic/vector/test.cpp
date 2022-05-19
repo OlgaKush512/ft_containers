@@ -51,34 +51,34 @@ int main()
 	}
 	std::cout << "___________________TEST du methode assign(begin, last)___________________" << std::endl;
 	
-	size_t P = 12;
-	ft::vector<char> v1(P, 'f');
-	v.assign(v1.begin(), v1.end());
-	gr.assign(gr.begin(), gr.end());
-	for (size_t i = 0 ; i < N; ++i)
-	{
-		std::cout << "vrai vector" << std::endl;
-		std::cout << "size : " << gr.size() << " capacity : " << gr.capacity()
-		<< " i : "<< i << " val: "<< gr.at(i) << std::endl;
+	// size_t P = 12;
+	// ft::vector<char> v1(P, 'f');
+	// v.assign(v1.begin(), v1.end());
+	// gr.assign(gr.begin(), gr.end());
+	// for (size_t i = 0 ; i < N; ++i)
+	// {
+	// 	std::cout << "vrai vector" << std::endl;
+	// 	std::cout << "size : " << gr.size() << " capacity : " << gr.capacity()
+	// 	<< " i : "<< i << " val: "<< gr.at(i) << std::endl;
 
-		std::cout << "mon vector v" << std::endl;
-		std::cout << "size : " << v.size() << " capacity : " << v.capacity()
-		<< " i : "<< i << " val: "<< v.at(i) << std::endl;
+	// 	std::cout << "mon vector v" << std::endl;
+	// 	std::cout << "size : " << v.size() << " capacity : " << v.capacity()
+	// 	<< " i : "<< i << " val: "<< v.at(i) << std::endl;
 
-		std::cout << "mon vector v1" << std::endl;
-		std::cout << "size : " << v1.size() << " capacity : " << v1.capacity()
-		<< " i : "<< i << " val: "<< v1.at(i) << std::endl << std::endl;
-	}
-	for (size_t i = 0 ; i < P; ++i)
-	{
-		std::cout << "mon vector v" << std::endl;
-		std::cout << "size : " << v.size() << " capacity : " << v.capacity()
-		<< " i : "<< i << " val: "<< v.at(i) << std::endl;
+	// 	std::cout << "mon vector v1" << std::endl;
+	// 	std::cout << "size : " << v1.size() << " capacity : " << v1.capacity()
+	// 	<< " i : "<< i << " val: "<< v1.at(i) << std::endl << std::endl;
+	// }
+	// for (size_t i = 0 ; i < P; ++i)
+	// {
+	// 	std::cout << "mon vector v" << std::endl;
+	// 	std::cout << "size : " << v.size() << " capacity : " << v.capacity()
+	// 	<< " i : "<< i << " val: "<< v.at(i) << std::endl;
 
-		std::cout << "mon vector v1" << std::endl;
-		std::cout << "size : " << v1.size() << " capacity : " << v1.capacity()
-		<< " i : "<< i << " val: "<< v1.at(i) << std::endl << std::endl;
-	}
+	// 	std::cout << "mon vector v1" << std::endl;
+	// 	std::cout << "size : " << v1.size() << " capacity : " << v1.capacity()
+	// 	<< " i : "<< i << " val: "<< v1.at(i) << std::endl << std::endl;
+	// }
 
 	N = 5;
 	ft::vector<int> my_v(N);
@@ -174,6 +174,37 @@ int main()
 
 	lala.resize(1);
 
+	std::cout << "___________________TEST du methode insert(iterator pos, size_t count, const T& value)___________________" << std::endl;
+
+	N = 3;
+	ft::vector<int> f1(N);
+	ft::vector<int> f2(N);
+	std::vector<int> tr1(N);
+
+	for (size_t i = 0; i < 3; i++){
+		f2[i] = i;
+		tr1[i] = i;
+	}
+	f1.assign(8,8);
+
+	std::cout << "f1" << std::endl;
+	for (size_t i = 0; i < f1.size(); i++)
+		std::cout << f1.at(i) << ' ';
+	std::cout << std::endl << std::endl;
+	std::cout << "f2" << std::endl;
+	for (size_t i = 0; i < f2.size(); i++)
+		std::cout << f2.at(i) << ' ';
+	std::cout << std::endl << std::endl;
+	std::cout << "tr1" << std::endl;
+	for (size_t i = 0; i < tr1.size(); i++)
+		std::cout << tr1.at(i) << ' ';
+	std::cout << std::endl << std::endl;
+
+	f2.insert(f2.begin() + 1, f1.begin(), f1.end());
+	std::cout << "new f2" << std::endl;
+	for (size_t i = 0; i < f2.size(); i++)
+		std::cout << f2.at(i) << ' ';
+	std::cout << std::endl << std::endl;
 
 /* 
 	std::cout << "___________________TEST du operator=(value_type b) d'iterator___________________" << std::endl;
