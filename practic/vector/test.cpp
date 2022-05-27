@@ -204,7 +204,19 @@ int main()
 	std::cout << "new f2" << std::endl;
 	for (size_t i = 0; i < f2.size(); i++)
 		std::cout << f2.at(i) << ' ';
+	std::cout << "size: " << f2.size() << std::endl;
+	std::cout << "capacity; " << f2.capacity() << std::endl;
 	std::cout << std::endl << std::endl;
+
+	tr1.insert(tr1.begin() + 1, f1.begin(), f1.end());
+	std::cout << "new tr1" << std::endl;
+	for (size_t i = 0; i < tr1.size(); i++)
+		std::cout << tr1.at(i) << ' ';
+	std::cout << "size: " << tr1.size() << std::endl;
+	std::cout << "capacity; " << tr1.capacity() << std::endl;
+
+	std::cout << std::endl << std::endl;
+
 
 /* 
 	std::cout << "___________________TEST du operator=(value_type b) d'iterator___________________" << std::endl;

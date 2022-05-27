@@ -16,7 +16,7 @@ namespace ft
 	class vector
 	{
 		template<class U>
-		class RandomAccessIterator: public ft::iterator<ft::random_access_iterator_tag, U>
+		class RandomAccessIterator: public ft::iterator<std::random_access_iterator_tag, U>
 		{
 			
 			public:
@@ -492,34 +492,32 @@ namespace ft
 				if (first > last)
 					return; //error?
 				size_t count = last - first;
-				size_type move = (this->end() - pos - 1);
-				// size_type pos_i = _size - move - 1;
+				size_type move = (this->end() - pos );
+				size_type pos_i = _size - move;
 				std::cout << "count: " << count << std::endl;
 				std::cout << "move: " << move << std::endl;
 				// std::cout << "pos_i: " << pos_i << std::endl;
 				if ((_size + count) > _cap)
-					reserve(2 * _cap);
+					reserve(_size + count);
 				for (size_type i = 0; i < count; ++i)
-					_alloc.construct(_array + _size + i , 0);
-				std::cout << "move: " << move << std::endl;
+					_alloc.construct(_array + _size + i , value_type());
+				std::cout << "size: " << _size << std::endl;
+				std::cout << "_cap: " << _cap << std::endl;
+
+				for (size_t i = 0; i < this->size(); i++)
+					std::cout << this->at(i) << ' ';
+				std::cout << std::endl << std::endl;
 				for (size_type i = 0; i < move; ++i){
 					_array[_size - i - 1 + count] = _array[_size - i - 1];
 					std::cout << "moved: " << _array[_size - i - 1 + count] << std::endl;
 				}
 				_size += count;
-				// for (size_type i = 0; first < last; ++first, ++i)
-				// 	_array[pos_i + i] = *first;
+				for (size_t i = 0; i < this->size(); i++)
+					std::cout << this->at(i) << ' ';
+				std::cout << std::endl << std::endl;
+				for (size_type i = 0; first < last; ++first, ++i)
+					_array[pos_i + i] = *first;
 			}
-
-			// template<typename _InputIterator>
-			// void
-			// insert(iterator __position, _InputIterator __first,
-			// 	_InputIterator __last)
-			// {
-			// // Check whether it's an integral type.  If so, it's not an iterator.
-			// typedef typename std::__is_integer<_InputIterator>::__type _Integral;
-			// _M_insert_dispatch(__position, __first, __last, _Integral());
-	
 
 			// // ERASE
 			iterator erase(iterator pos)
