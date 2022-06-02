@@ -1,8 +1,8 @@
 NAME		= 	ft_containers
 
-SRCS		=	main.cpp
+SRCS		=	main_swap.cpp
 
-HEADER		=	vector.hpp itertor.hpp stack.hpp type_traits.hpp utility.hpp
+HEADER		=	vector.hpp itertor.hpp stack.hpp type_traits.hpp utility.hpp base.hpp common.hpp
 
 OBJS		= 	$(SRCS:.cpp=.o)
 
