@@ -3,11 +3,12 @@
 
 // # include <vector>
 # include <memory>
+# include <vector>
 # include <stdexcept>
 # include <stdint.h>
 # include <iostream>
-# include "../iterator/iterator.hpp"
-# include "../type_traits/type_traits.hpp"
+# include "iterator.hpp"
+# include "type_traits.hpp"
 
 
 namespace ft
@@ -15,16 +16,16 @@ namespace ft
 	template<class T, class A = std::allocator<T> >
 	class vector
 	{
-		template<class U>
-		class RandomAccessIterator: public ft::iterator<std::random_access_iterator_tag, U>
+		template<bool IsConst>
+		class RandomAccessIterator: public ft::iterator<std::random_access_iterator_tag, T>
 		{
 			
 			public:
 
-				typedef typename iterator_traits<U*>::value_type			value_type;
-				typedef typename iterator_traits<U*>::difference_type		difference_type;
-				typedef typename iterator_traits<U*>::pointer				pointer;
-				typedef typename iterator_traits<U*>::reference				reference;
+				typedef typename iterator_traits<T*>::value_type			value_type;
+				typedef typename iterator_traits<T*>::difference_type		difference_type;
+				typedef typename iterator_traits<T*>::pointer				pointer;
+				typedef typename iterator_traits<T*>::reference				reference;
 
 
 				// CONSTRUCTORS
@@ -58,15 +59,15 @@ namespace ft
 					return (&**this);
 				};
 
-				bool operator==(const RandomAccessIterator& b) const
-				{
-					return (_current == b._current);
-				};
+				// bool operator==(const RandomAccessIterator& b) const
+				// {
+				// 	return (_current == b._current);
+				// };
 
-				bool operator!=(const RandomAccessIterator& b)
-				{
-					return (!(*this == b));
-				};
+				// bool operator!=(const RandomAccessIterator& b)
+				// {
+				// 	return (!(*this == b));
+				// };
 				
 				RandomAccessIterator& operator++()
 				{
@@ -152,6 +153,8 @@ namespace ft
 
 		};
 
+		public :
+
 		public:
 
 			typedef A										allocator_type;
@@ -165,8 +168,8 @@ namespace ft
 			typedef typename A::const_reference				const_reference;
 			typedef typename A::value_type					value_type;
 
-			typedef RandomAccessIterator<T>					iterator;
-			typedef RandomAccessIterator<const T>			const_iterator;
+			typedef RandomAccessIterator<false>					iterator;
+			typedef RandomAccessIterator<true>			const_iterator;
 			typedef ft::reverse_iterator<iterator>			reverse_iterator;
 			typedef ft::reverse_iterator<const_iterator>	const_reverse_iterator;
 
@@ -607,6 +610,11 @@ namespace ft
 			allocator_type	_alloc;
 	};
 
+	template<typename C, typename I, typename J>
+	bool operator==(const typename ft::vector<C>::RandomAccessIterator<I> & lhs, const typename ft::vector<C>::RandomAccessIterator<J> & rhs)
+	{
+		return &(*lhs) == &(*rhs);
+	}
 
 	template< class T, class Alloc >
 	bool operator==(const ft::vector<T,Alloc>& lhs,
@@ -636,6 +644,14 @@ namespace ft
 		}
 		return (false);
 	}
+
+
+	// template<typename C, typename I, typename J>
+	// bool operator==(const typename ft::vector<C>::RandomAccessIterator<I> & lhs, const typename ft::vector<C>::RandomAccessIterator<J> & rhs)
+	// {
+	// 	return &(*lhs) == &(*rhs);
+	// }
+
 
 	/*template< class T, class Alloc >
 	friend bool operator<(const ft::vector<T,Alloc>& lhs,
