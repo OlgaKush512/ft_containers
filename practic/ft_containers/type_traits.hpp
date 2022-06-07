@@ -37,19 +37,6 @@ namespace ft
 	template<> struct is_integral<unsigned long long int> : public true_type {};
 
 	// ft::enable_if <		!is_integral<InputIt>::value, >::type
-
-	template <bool B, typename T, typename F>
-	struct conditional
-	{
-		typedef F type;
-	};
-
-	template <typename T, typename F>
-	struct conditional<true, T, F>
-	{
-		typedef T type;
-	};
-
 	template < bool B, class T =  void > struct enable_if {} ;
 	template < class T > struct enable_if < true , T >  {  typedef T type ;  } ;
 }

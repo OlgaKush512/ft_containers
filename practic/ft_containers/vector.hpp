@@ -3,12 +3,11 @@
 
 // # include <vector>
 # include <memory>
-# include <vector>
 # include <stdexcept>
 # include <stdint.h>
 # include <iostream>
-# include "iterator.hpp"
-# include "type_traits.hpp"
+# include "../iterator/iterator.hpp"
+# include "../type_traits/type_traits.hpp"
 
 
 namespace ft
@@ -16,16 +15,16 @@ namespace ft
 	template<class T, class A = std::allocator<T> >
 	class vector
 	{
-		template<bool IsConst>
-		class RandomAccessIterator: public ft::iterator<std::random_access_iterator_tag, T>
+		template<class U>
+		class RandomAccessIterator: public ft::iterator<std::random_access_iterator_tag, U>
 		{
 			
 			public:
 
-				typedef typename iterator_traits<T*>::value_type			value_type;
-				typedef typename iterator_traits<T*>::difference_type		difference_type;
-				typedef typename iterator_traits<T*>::pointer				pointer;
-				typedef typename iterator_traits<T*>::reference				reference;
+				typedef typename iterator_traits<U*>::value_type			value_type;
+				typedef typename iterator_traits<U*>::difference_type		difference_type;
+				typedef typename iterator_traits<U*>::pointer				pointer;
+				typedef typename iterator_traits<U*>::reference				reference;
 
 
 				// CONSTRUCTORS
@@ -59,15 +58,15 @@ namespace ft
 					return (&**this);
 				};
 
-				// bool operator==(const RandomAccessIterator& b) const
-				// {
-				// 	return (_current == b._current);
-				// };
+				bool operator==(const RandomAccessIterator& b) const
+				{
+					return (_current == b._current);
+				};
 
-				// bool operator!=(const RandomAccessIterator& b)
-				// {
-				// 	return (!(*this == b));
-				// };
+				bool operator!=(const RandomAccessIterator& b)
+				{
+					return (!(*this == b));
+				};
 				
 				RandomAccessIterator& operator++()
 				{
@@ -153,8 +152,6 @@ namespace ft
 
 		};
 
-		public :
-
 		public:
 
 			typedef A										allocator_type;
@@ -168,8 +165,8 @@ namespace ft
 			typedef typename A::const_reference				const_reference;
 			typedef typename A::value_type					value_type;
 
-			typedef RandomAccessIterator<false>					iterator;
-			typedef RandomAccessIterator<true>			const_iterator;
+			typedef pointer					iterator;
+			typedef const_pointer			const_iterator;
 			typedef ft::reverse_iterator<iterator>			reverse_iterator;
 			typedef ft::reverse_iterator<const_iterator>	const_reverse_iterator;
 
@@ -404,12 +401,15 @@ namespace ft
 			void assign(typename ft::enable_if<!is_integral<InputIterator>::value, InputIterator>::type first, InputIterator last)
 			{
 				size_type tmp_size = 0;
-				for (size_type i = 0; (first + i) != last; ++i)
+				InputIterator copy_first = first;
+
+				for (; copy_first != last; ++copy_first)
 					++tmp_size;
 				clear();
 				resize(tmp_size);
-				for (size_type i = 0; i < tmp_size; ++i)
-					*(_array + i) = *(first + i);
+				copy_first = first;
+				for (size_type i = 0; i < tmp_size; ++i, ++copy_first)
+					*(_array + i) = *(copy_first);
 			}
 
 			/*_____________________________________________________________________________________________________*/
@@ -437,6 +437,7 @@ namespace ft
 			void pop_back()
 			{
 				_alloc.destroy(_array + (_size - 1));
+				--_size;
 			}
 
 			// INSERT
@@ -477,7 +478,7 @@ namespace ft
 				size_type res = (this->end() - pos);
 				size_type pos_i = _size - res;
 				if ((_size + count) > _cap)
-					reserve(2 * _cap);
+					reserve(_size + count);
 				for (size_type i = 0; i < count; ++i)
 					_alloc.construct(_array + _size + i , value);
 				for (size_type i = 0; i < res; ++i)
@@ -490,35 +491,27 @@ namespace ft
 			template <class InputIt>
 			void insert( iterator pos, typename ft::enable_if<!is_integral<InputIt>::value, InputIt>::type first, InputIt last)
 			{
-				if (pos < this->begin() || pos >= this->end())
-					return; //error?
-				if (first > last)
-					return; //error?
-				size_t count = last - first;
+				// if (pos < this->begin() || pos >= this->end())
+				// 	return; //error?
+				// if (first > last)
+				// 	return; //error?
+				InputIt copy_first = first;
+				size_t count = 0;
+				while (copy_first != last)
+				{
+					++count;
+					++copy_first;
+				}
 				size_type move = (this->end() - pos );
 				size_type pos_i = _size - move;
-				std::cout << "count: " << count << std::endl;
-				std::cout << "move: " << move << std::endl;
-				// std::cout << "pos_i: " << pos_i << std::endl;
 				if ((_size + count) > _cap)
 					reserve(_size + count);
 				for (size_type i = 0; i < count; ++i)
 					_alloc.construct(_array + _size + i , value_type());
-				std::cout << "size: " << _size << std::endl;
-				std::cout << "_cap: " << _cap << std::endl;
-
-				for (size_t i = 0; i < this->size(); i++)
-					std::cout << this->at(i) << ' ';
-				std::cout << std::endl << std::endl;
-				for (size_type i = 0; i < move; ++i){
+				for (size_type i = 0; i < move; ++i)
 					_array[_size - i - 1 + count] = _array[_size - i - 1];
-					std::cout << "moved: " << _array[_size - i - 1 + count] << std::endl;
-				}
 				_size += count;
-				for (size_t i = 0; i < this->size(); i++)
-					std::cout << this->at(i) << ' ';
-				std::cout << std::endl << std::endl;
-				for (size_type i = 0; first < last; ++first, ++i)
+				for (size_type i = 0; first != last; ++first, ++i)
 					_array[pos_i + i] = *first;
 			}
 
@@ -527,13 +520,13 @@ namespace ft
 			{
 				if (!this->empty())
 				{
-					size_type res = (this->end() - pos);
-					size_type pos_i = _size - res;
+					size_type res = (this->end() - pos) - 1;
+					size_type pos_i = _size - res - 1;
 					for (size_type i = 0; i < res; ++i)
 						_array[pos_i + i] = _array[pos_i + i + 1];
 					--_size;
 					_alloc.destroy(_array + _size);
-					return (iterator(&(_array[pos_i + 1])));
+					return (iterator(&(_array[pos_i])));
 				}
 				return (this->begin());
 			}
@@ -545,18 +538,13 @@ namespace ft
 				long long	move = (this->end() - last);
 				long long	erasing = (last - first);
 				long long	pos_i = _size - erasing - move;
-
-				std::cout << "move : " << move << std::endl;
-				std::cout << "erasing : " << erasing << std::endl;
-				std::cout << "pos_i : " << pos_i << std::endl;
-
 				long long i = 0;
 				for (; i < move; ++i)
 					_array[pos_i + i] = _array[pos_i + erasing + i];
 				for (long long j = 0; j < erasing; ++j)
 					_alloc.destroy(_array + pos_i + move + j); // ne marche non plus. voir avec le size non change
 				_size -= erasing;
-				return (iterator(_array + pos_i + move));			
+				return (iterator(_array + pos_i ));			
 			}
 
 			void swap(vector& other)
@@ -610,11 +598,6 @@ namespace ft
 			allocator_type	_alloc;
 	};
 
-	template<typename C, typename I, typename J>
-	bool operator==(const typename ft::vector<C>::RandomAccessIterator<I> & lhs, const typename ft::vector<C>::RandomAccessIterator<J> & rhs)
-	{
-		return &(*lhs) == &(*rhs);
-	}
 
 	template< class T, class Alloc >
 	bool operator==(const ft::vector<T,Alloc>& lhs,
@@ -644,14 +627,6 @@ namespace ft
 		}
 		return (false);
 	}
-
-
-	// template<typename C, typename I, typename J>
-	// bool operator==(const typename ft::vector<C>::RandomAccessIterator<I> & lhs, const typename ft::vector<C>::RandomAccessIterator<J> & rhs)
-	// {
-	// 	return &(*lhs) == &(*rhs);
-	// }
-
 
 	/*template< class T, class Alloc >
 	friend bool operator<(const ft::vector<T,Alloc>& lhs,
