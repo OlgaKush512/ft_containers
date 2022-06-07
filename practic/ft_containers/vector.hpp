@@ -6,8 +6,8 @@
 # include <stdexcept>
 # include <stdint.h>
 # include <iostream>
-# include "../iterator/iterator.hpp"
-# include "../type_traits/type_traits.hpp"
+# include "iterator.hpp"
+# include "type_traits.hpp"
 
 
 namespace ft
@@ -261,12 +261,12 @@ namespace ft
 
 			reverse_iterator rbegin()
 			{
-				return (this->end());
+				return (reverse_iterator(this->end()));
 			}
 
 			const_reverse_iterator rbegin() const
 			{
-				return (this->end());
+				return (const_reverse_iterator(this->end()));
 			}
 
 			reverse_iterator rend()
@@ -598,7 +598,6 @@ namespace ft
 			allocator_type	_alloc;
 	};
 
-
 	template< class T, class Alloc >
 	bool operator==(const ft::vector<T,Alloc>& lhs,
 					const ft::vector<T,Alloc>& rhs)
@@ -628,21 +627,53 @@ namespace ft
 		return (false);
 	}
 
-	/*template< class T, class Alloc >
-	friend bool operator<(const ft::vector<T,Alloc>& lhs,
-					const ft::vector<T,Alloc>& rhs);
+	template< class T, class Alloc >
+	bool operator<(const ft::vector<T,Alloc>& lhs,
+					const ft::vector<T,Alloc>& rhs)
+	{
+		size_t size_tmp = (lhs.size() < rhs.size() ) ? lhs.size() : rhs.size();
+		for (size_t i = 0; i < size_tmp; ++i)
+		{
+			if (lhs[i] > rhs[i]) // if string?
+				return (false);
+			if (lhs[i] < rhs[i])
+				return (true);
+		}
+		if ((lhs.size() == rhs.size()) || (lhs.size() > rhs.size()))
+			return (false);
+		return (true);
+	}
 
 	template< class T, class Alloc >
-	friend bool operator<=(const ft::vector<T,Alloc>& lhs,
-					const ft::vector<T,Alloc>& rhs);
+	bool operator<=(const ft::vector<T,Alloc>& lhs,
+					const ft::vector<T,Alloc>& rhs)
+	{
+		size_t size_tmp = (lhs.size() < rhs.size() ) ? lhs.size() : rhs.size();
+		for (size_t i = 0; i < size_tmp; ++i)
+		{
+			if (lhs[i] > rhs[i]) // if string?
+				return (false);
+			if (lhs[i] < rhs[i])
+				return (true);
+		}
+		if (lhs.size() > rhs.size())
+			return (false);
+		return (true);
+	}
 	
 	template< class T, class Alloc >
-	friend bool operator>(const ft::vector<T,Alloc>& lhs,
-					const ft::vector<T,Alloc>& rhs);
+	bool operator>(const ft::vector<T,Alloc>& lhs,
+					const ft::vector<T,Alloc>& rhs)
+	{
+		return (!(lhs <= rhs));
+	}
 	
 	template< class T, class Alloc >
-	friend bool operator>=(const ft::vector<T,Alloc>& lhs,
-					const ft::vector<T,Alloc>& rhs);*/
+	bool operator>=(const ft::vector<T,Alloc>& lhs,
+					const ft::vector<T,Alloc>& rhs)
+	{
+		return (!(lhs < rhs));
+	}
 }
 
 # endif
