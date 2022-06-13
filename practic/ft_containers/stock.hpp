@@ -24,15 +24,14 @@ namespace ft
 				typedef typename iterator_traits<U*>::value_type			value_type;
 				typedef typename iterator_traits<U*>::difference_type		difference_type;
 				typedef typename iterator_traits<U*>::pointer				pointer;
-				typedef typename iterator_traits<const U*>::const_pointer	const_pointer;
 				typedef typename iterator_traits<U*>::reference				reference;
 
 
 				// CONSTRUCTORS
 
-				RandomAccessIterator<U>() {};
+				RandomAccessIterator() {};
 				explicit RandomAccessIterator(pointer const ptr) : _current(ptr) {};
-				RandomAccessIterator(RandomAccessIterator<U> const &other) : _current(other.base()) {};
+				RandomAccessIterator(RandomAccessIterator const &other) : _current(other.base()) {};
 
 				RandomAccessIterator& operator=(RandomAccessIterator const &other)
 				{
@@ -56,7 +55,7 @@ namespace ft
 
 				pointer operator->() const
 				{
-					return (_current);
+					return (&**this);
 				};
 
 				bool operator==(const RandomAccessIterator& b) const
@@ -64,7 +63,7 @@ namespace ft
 					return (_current == b._current);
 				};
 
-				bool operator!=(const RandomAccessIterator& b) const
+				bool operator!=(const RandomAccessIterator& b)
 				{
 					return (!(*this == b));
 				};
@@ -92,7 +91,7 @@ namespace ft
 				{
 					RandomAccessIterator temp = *this;
 					--(*this);
-					return (temp);
+					return (*temp);
 				};
 
 				reference  operator[](difference_type n)
@@ -111,52 +110,42 @@ namespace ft
 					return (RandomAccessIterator(_current + n));
 				};
 
-				RandomAccessIterator operator-=(difference_type n)
+				RandomAccessIterator operator-=(difference_type n) const
 				{
 					_current -= n;
 					return (*this);
 				};
 
-				RandomAccessIterator operator-(difference_type n) const
+				RandomAccessIterator operator-(difference_type n)
 				{
 					return (RandomAccessIterator(_current - n));
 				};
 
-				difference_type operator-(const RandomAccessIterator& b) const
+				difference_type operator-(const RandomAccessIterator& b)
 				{
-					return (_current - b.base());
+					return (_current - b._current);
 				};
 
-				bool operator<(const RandomAccessIterator& b) const
+				bool operator<(const RandomAccessIterator& b)
 				{
-					return (this->base() < b._current);
+					return (_current < b._current);
 				};
 
-				bool operator>(const RandomAccessIterator& b) const
+				bool operator>(const RandomAccessIterator& b)
 				{
 					return (b._current < _current);
 				};
 				
-				bool operator<=(const RandomAccessIterator& b) const
+				bool operator<=(const RandomAccessIterator& b)
 				{
 					return (!(b._current < _current));
 				};
 
-				bool operator>=(const RandomAccessIterator& b) const
+				bool operator>=(const RandomAccessIterator& b)
 				{
 					return (!(_current < b._current));
 				};
 
-				operator  RandomAccessIterator<const U> () const
-				{
-					RandomAccessIterator<const U> citer(_current);
-					return (citer);
-				};
-
-				// operator const value_type() const
-				// {
-				// 	return (value_type(_current));
-				// };
 			protected:
 
 				pointer	_current;
@@ -176,8 +165,8 @@ namespace ft
 			typedef typename A::const_reference				const_reference;
 			typedef typename A::value_type					value_type;
 
-			typedef RandomAccessIterator<T>					iterator;
-			typedef RandomAccessIterator<const T>			const_iterator;
+			typedef pointer					iterator;
+			typedef const_pointer			const_iterator;
 			typedef ft::reverse_iterator<iterator>			reverse_iterator;
 			typedef ft::reverse_iterator<const_iterator>	const_reverse_iterator;
 
@@ -583,13 +572,6 @@ namespace ft
 				}
 			}
 			
-			// operator const_iterator () const
-			// {
-			// 	// RandomAccessIterator<const T> citer(_current);
-			// 	return (iterator);
-			// };
-
-
 			// NON_MEMBER FONCTIONS
 
 			/*template< class T, class Alloc >
