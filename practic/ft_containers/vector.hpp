@@ -44,6 +44,7 @@ namespace ft
 
 				// MEMBER FONCTIONS
 
+				
 				pointer base() const
 				{
 					return (_current);
@@ -56,15 +57,17 @@ namespace ft
 
 				pointer operator->() const
 				{
-					return (_current);
+					return (this->base());
 				};
 
-				bool operator==(const RandomAccessIterator& b) const
+				template< class Iterator1 >
+				bool operator==(const Iterator1& b) const
 				{
-					return (_current == b._current);
+					return (this->base() == b.base());
 				};
 
-				bool operator!=(const RandomAccessIterator& b) const
+				template< class Iterator1 >
+				bool operator!=(const Iterator1& b) const
 				{
 					return (!(*this == b));
 				};
@@ -127,24 +130,28 @@ namespace ft
 					return (_current - b.base());
 				};
 
-				bool operator<(const RandomAccessIterator& b) const
+				template< class Iterator1 >
+				bool operator<(const Iterator1& b) const
 				{
-					return (this->base() < b._current);
+					return (this->base() < b.base());
 				};
 
-				bool operator>(const RandomAccessIterator& b) const
+				template< class Iterator1 >
+				bool operator>(const Iterator1& b) const
 				{
-					return (b._current < _current);
+					return (b.base() < this->base());
 				};
 				
-				bool operator<=(const RandomAccessIterator& b) const
+				template< class Iterator1 >
+				bool operator<=(const Iterator1& b) const
 				{
-					return (!(b._current < _current));
+					return (!(b.base() < this->base()));
 				};
 
-				bool operator>=(const RandomAccessIterator& b) const
+				template< class Iterator1 >
+				bool operator>=(const Iterator1& b) const
 				{
-					return (!(_current < b._current));
+					return (!(this->base() < b.base()));
 				};
 
 				operator  RandomAccessIterator<const U> () const
@@ -153,10 +160,18 @@ namespace ft
 					return (citer);
 				};
 
+				// operator  const_pointer () const
+				// {
+				// 	const_pointer citer(_current);
+				// 	return (citer);
+				// };
+
 				// operator const value_type() const
 				// {
-				// 	return (value_type(_current));
+				// 	const_value_type ret(*_current);
+				// 	return (ret);
 				// };
+
 			protected:
 
 				pointer	_current;
