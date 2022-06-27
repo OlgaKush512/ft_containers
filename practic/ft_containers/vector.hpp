@@ -8,6 +8,8 @@
 # include <iostream>
 # include "iterator.hpp"
 # include "type_traits.hpp"
+# include "RandomAccessIterator.hpp"
+
 
 
 namespace ft
@@ -15,169 +17,6 @@ namespace ft
 	template<class T, class A = std::allocator<T> >
 	class vector
 	{
-		template<class U>
-		class RandomAccessIterator: public ft::iterator<std::random_access_iterator_tag, U>
-		{
-			
-			public:
-
-				typedef typename iterator_traits<U*>::value_type			value_type;
-				typedef typename iterator_traits<U*>::difference_type		difference_type;
-				typedef typename iterator_traits<U*>::pointer				pointer;
-				typedef typename iterator_traits<const U*>::const_pointer	const_pointer;
-				typedef typename iterator_traits<U*>::reference				reference;
-
-
-				// CONSTRUCTORS
-
-				RandomAccessIterator<U>() {};
-				explicit RandomAccessIterator(pointer const ptr) : _current(ptr) {};
-				RandomAccessIterator(RandomAccessIterator<U> const &other) : _current(other.base()) {};
-
-				RandomAccessIterator& operator=(RandomAccessIterator const &other)
-				{
-					_current = other.base();
-					return (*this);
-				}
-
-				~RandomAccessIterator() {};
-
-				// MEMBER FONCTIONS
-
-				
-				pointer base() const
-				{
-					return (_current);
-				};
-
-				reference operator*() const
-				{
-					return (*_current);
-				};
-
-				pointer operator->() const
-				{
-					return (this->base());
-				};
-
-				template< class Iterator1 >
-				bool operator==(const Iterator1& b) const
-				{
-					return (this->base() == b.base());
-				};
-
-				template< class Iterator1 >
-				bool operator!=(const Iterator1& b) const
-				{
-					return (!(*this == b));
-				};
-				
-				RandomAccessIterator& operator++()
-				{
-					++_current;
-					return (*this);
-				};
-				
-				RandomAccessIterator  operator++(int)
-				{
-					RandomAccessIterator temp = *this;
-					++(*this);
-					return (temp);
-				};
-
-				RandomAccessIterator& operator--()
-				{
-					_current--;
-					return (*this);
-				};
-				
-				RandomAccessIterator  operator--(int)
-				{
-					RandomAccessIterator temp = *this;
-					--(*this);
-					return (temp);
-				};
-
-				reference  operator[](difference_type n)
-				{
-					return (*(*this + n));
-				};
-
-				RandomAccessIterator& operator+=(difference_type n)
-				{
-					_current += n;
-					return (*this);
-				};
-
-				RandomAccessIterator operator+(difference_type n) const
-				{
-					return (RandomAccessIterator(_current + n));
-				};
-
-				RandomAccessIterator operator-=(difference_type n)
-				{
-					_current -= n;
-					return (*this);
-				};
-
-				RandomAccessIterator operator-(difference_type n) const
-				{
-					return (RandomAccessIterator(_current - n));
-				};
-
-				difference_type operator-(const RandomAccessIterator& b) const
-				{
-					return (_current - b.base());
-				};
-
-				template< class Iterator1 >
-				bool operator<(const Iterator1& b) const
-				{
-					return (this->base() < b.base());
-				};
-
-				template< class Iterator1 >
-				bool operator>(const Iterator1& b) const
-				{
-					return (b.base() < this->base());
-				};
-				
-				template< class Iterator1 >
-				bool operator<=(const Iterator1& b) const
-				{
-					return (!(b.base() < this->base()));
-				};
-
-				template< class Iterator1 >
-				bool operator>=(const Iterator1& b) const
-				{
-					return (!(this->base() < b.base()));
-				};
-
-				operator  RandomAccessIterator<const U> () const
-				{
-					RandomAccessIterator<const U> citer(_current);
-					return (citer);
-				};
-
-				// operator  const_pointer () const
-				// {
-				// 	const_pointer citer(_current);
-				// 	return (citer);
-				// };
-
-				// operator const value_type() const
-				// {
-				// 	const_value_type ret(*_current);
-				// 	return (ret);
-				// };
-
-			protected:
-
-				pointer	_current;
-
-		};
-
 		public:
 
 			typedef A										allocator_type;
@@ -217,8 +56,6 @@ namespace ft
 			{
 				this->assign(first, last);
 			}
-
-
 
 			//COPY CONSTRUCTOR
 
@@ -603,25 +440,6 @@ namespace ft
 			// 	// RandomAccessIterator<const T> citer(_current);
 			// 	return (iterator);
 			// };
-
-
-			// NON_MEMBER FONCTIONS
-
-			/*template< class T, class Alloc >
-			friend bool operator<(const ft::vector<T,Alloc>& lhs,
-							const ft::vector<T,Alloc>& rhs);
-
-			template< class T, class Alloc >
-			friend bool operator<=(const ft::vector<T,Alloc>& lhs,
-							const ft::vector<T,Alloc>& rhs);
-			
-			template< class T, class Alloc >
-			friend bool operator>(const ft::vector<T,Alloc>& lhs,
-							const ft::vector<T,Alloc>& rhs);
-			
-			template< class T, class Alloc >
-			friend bool operator>=(const ft::vector<T,Alloc>& lhs,
-							const ft::vector<T,Alloc>& rhs);*/
 
 		private:
 

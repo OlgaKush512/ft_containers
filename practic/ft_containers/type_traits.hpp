@@ -36,6 +36,12 @@ namespace ft
 	template<> struct is_integral<unsigned long int> : public true_type {};
 	template<> struct is_integral<unsigned long long int> : public true_type {};
 
+	// template< class T > struct is_const : public false_type {};
+	// template<> struct is_const<const T> : public true_type {};
+
+	template<class T> struct is_const : public false_type {};
+	template<class T> struct is_const<const T> : public true_type {};
+
 	// ft::enable_if <		!is_integral<InputIt>::value, >::type
 	template < bool B, class T =  void > struct enable_if {} ;
 	template < class T > struct enable_if < true , T >  {  typedef T type ;  } ;
