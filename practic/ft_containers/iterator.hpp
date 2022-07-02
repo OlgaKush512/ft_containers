@@ -19,18 +19,17 @@ namespace ft
 
 	struct random_access_iterator_tag {};
 
+	template<typename Iterator>
+    struct iterator_traits
+    {
+      typedef typename Iterator::iterator_category iterator_category;
+      typedef typename Iterator::value_type        value_type;
+      typedef typename Iterator::difference_type   difference_type;
+      typedef typename Iterator::pointer           pointer;
+      typedef typename Iterator::reference         reference;
+    };
 
-	template< class Iterator >
-	struct iterator_traits
-	{
-		typedef typename Iterator::iterator_category	iterator_category;
-		typedef typename Iterator::value_type			value_type;
-		typedef typename Iterator::difference_type		difference_type;
-		typedef typename Iterator::pointer				pointer;
-		typedef typename Iterator::reference			reference;
-	};
-
-	template< class T >
+	template< typename T >
 	struct iterator_traits<T*>
 	{
 		typedef random_access_iterator_tag	iterator_category;
@@ -46,8 +45,7 @@ namespace ft
 		typedef random_access_iterator_tag	iterator_category;
 		typedef T							value_type;
 		typedef ptrdiff_t					difference_type;
-		typedef T*							pointer;
-		typedef const T*					const_pointer;
+		typedef  const T*					pointer;
 		typedef const T&					reference;
 	};
 
@@ -64,6 +62,7 @@ namespace ft
 			typedef reverse_iterator<Iterator>								MyType;
 			typedef Iterator												iterator_type;
 			typedef typename iterator_traits<Iterator>::value_type			value_type;
+
 			typedef typename iterator_traits<Iterator>::difference_type		difference_type;
 			typedef typename iterator_traits<Iterator>::pointer				pointer;
 			typedef typename iterator_traits<Iterator>::reference			reference;
@@ -162,6 +161,16 @@ namespace ft
 				return (_current);
 			};
 
+
+			// operator const reverse_iterator<const value_type *>() 
+			// {
+			// 	return reverse_iterator<const value_type *>(const_cast<const value_type *>(this->_current));
+			// }
+			
+			// operator const value_type () const
+			// {
+			// 	return (_current);
+			// };
 		protected:
 
 			iterator_type	_current;
@@ -217,13 +226,26 @@ namespace ft
 		return (reverse_iterator<Iterator>(rev_it.base() - n));
 	}
 
-	template <class Iterator>
-	typename reverse_iterator<Iterator>::difference_type operator-(
-				const reverse_iterator<Iterator>& lhs,
-				const reverse_iterator<Iterator>& rhs)
+	// template <class Iterator>
+	// typename reverse_iterator<Iterator>::difference_type operator-(
+	// 			const reverse_iterator<Iterator>& lhs,
+	// 			const reverse_iterator<Iterator>& rhs)
+	// {
+	// 	return (rhs.base() - lhs.base());
+	// }
+
+	template <typename Iterator1, typename Iterator2>
+	typename reverse_iterator<Iterator1>::difference_type operator-(
+				const reverse_iterator<Iterator1>& lhs,
+				const reverse_iterator<Iterator2>& rhs)
 	{
 		return (rhs.base() - lhs.base());
 	}
+
+	// template <class Iter1, class Iter2>
+	// typename reverse_iterator<Iter1>::difference_type
+    // operator-(const reverse_iterator<Iter1>& lhs, const reverse_iterator<Iter2>& rhs)
+	// { return (rhs.base() - lhs.base()); }
 		
 };
 

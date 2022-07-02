@@ -20,7 +20,7 @@ namespace ft
 				typedef typename iterator_traits<U*>::value_type			value_type;
 				typedef typename iterator_traits<U*>::difference_type		difference_type;
 				typedef typename iterator_traits<U*>::pointer				pointer;
-				typedef typename iterator_traits<const U*>::const_pointer	const_pointer;
+				// typedef typename iterator_traits<const U*>::const_pointer	const_pointer;
 				typedef typename iterator_traits<U*>::reference				reference;
 
 
@@ -46,11 +46,11 @@ namespace ft
 					return (citer);
 				};
 
-				operator  const_pointer () const
-				{
-					const_pointer citer(_current);
-					return (citer);
-				};
+				// operator  const_pointer () const
+				// {
+				// 	const_pointer citer(_current);
+				// 	return (citer);
+				// };
 				
 				pointer base() const
 				{
