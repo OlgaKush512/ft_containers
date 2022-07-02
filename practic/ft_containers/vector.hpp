@@ -21,11 +21,10 @@ namespace ft
 
 			typedef A										allocator_type;
 			typedef typename A::pointer						pointer;
-			
+			typedef typename A::const_pointer				const_pointer;
 			typedef std::size_t								size_type;
 			typedef std::ptrdiff_t							difference_type;
 
-			typedef typename A::const_pointer				const_pointer;
 			typedef typename A::reference					reference;
 			typedef typename A::const_reference				const_reference;
 			typedef typename A::value_type					value_type;

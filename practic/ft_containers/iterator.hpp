@@ -97,7 +97,7 @@ namespace ft
 
 			pointer operator->() const
 			{
-				return (_current.base());
+				return &(operator*());
 			};
 
 
