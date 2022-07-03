@@ -60,7 +60,7 @@ namespace ft
 
 			vector(const vector& other): _size(other._size), _cap(other._cap), _alloc(other._alloc)
 			{
-				_array = _alloc.allocate(_size);
+				_array = _alloc.allocate(_cap);
 				for (size_type i = 0; i < _size; ++i)
 				{
 					_alloc.construct(_array + i,  other._array[i]);
