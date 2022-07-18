@@ -266,18 +266,18 @@ namespace ft {
 				return (_size);
 			}
 
-			void	print_node(node_pointer node)
-			{
-				std::cout <<"Node : " << &node << std::endl
-				<<"is_root : " << _is_root(node) << std::endl
-				<<"data : " << node->data->first << std::endl
-				<<"is_black : " << node->is_black << std::endl
-				<<"is_nil : " << node->is_nil << std::endl
-				<<"left : " << node->left << std::endl
-				<<"right : " << node->right << std::endl
-				<<"parent : " << node->parent << std::endl
-				<<"root : " << _root->data->first << std::endl << std::endl << std::endl;
-			}
+			// void	print_node(node_pointer node)
+			// {
+			// 	std::cout <<"Node : " << &node << std::endl
+			// 	<<"is_root : " << _is_root(node) << std::endl
+			// 	<<"data : " << node->data->first << std::endl
+			// 	<<"is_black : " << node->is_black << std::endl
+			// 	<<"is_nil : " << node->is_nil << std::endl
+			// 	<<"left : " << ( _is_nill(node->left)? 0 : node->left->data->first) << " address : " << node->left << std::endl
+			// 	<<"right : " << (_is_nill(node->right)? 0 :node->right->data->first) << " address : " << node->right << std::endl
+			// 	<<"parent : " << node->parent->data->first << " address : " << node->parent << std::endl
+			// 	<<"root : " << _root->data->first << " address : " << _root << std::endl << std::endl << std::endl;
+			// }
 
 			void	print_tree(node_pointer root)
 			{
@@ -358,6 +358,19 @@ namespace ft {
 				return new_val;
 			}
 				
+			void	print_node(node_pointer node)
+			{
+				std::cout <<"Node : " << node << std::endl
+				<<"is_root : " << _is_root(node) << std::endl
+				<<"data : " << node->data->first << std::endl
+				<<"is_black : " << node->is_black << std::endl
+				<<"is_nil : " << node->is_nil << std::endl
+				<<"left : " << ( _is_nill(node->left)? 0 : node->left->data->first) << " address : " << node->left << std::endl
+				<<"right : " << (_is_nill(node->right)? 0 :node->right->data->first) << " address : " << node->right << std::endl
+				<<"parent : " << node->parent->data->first << " address : " << node->parent << std::endl
+				<<"root : " << _root->data->first << " address : " << _root << std::endl << std::endl << std::endl;
+			}
+
 
 			pair<iterator, bool>	insert(const value_type& value) // value_type = pair
 			{
@@ -378,10 +391,12 @@ namespace ft {
 				new_node->right = _nil;
 				if (_root == _header)
 				{
-					std:: cout << "Nous sommes la\n";
+					// std:: cout << "C'est le premier node : \n\n\n";
 					_root = new_node;
 					new_node->parent = _header;
 					new_node->is_black = true;
+					// print_node(new_node);
+					// std:: cout << "\n\n\n";
 					return (ft::make_pair(new_node, true));
 				}
 				node_pointer y = NULL;
@@ -389,18 +404,25 @@ namespace ft {
 				while (!_is_nill(x))
 				{
 					y = x;
-					if (new_node->data < x->data)
+					// std:: cout << "new_node->data : " << new_node->data <<  " new_node->data : " <<x->data << "\n\n";
+					if (new_node->data->first < x->data->first)
 						x = x->left;
 					else
 						x = x->right;
 				}
 				new_node->parent = y;
-				if (new_node->data < y->data)
+				std:: cout << "new_node->parent->data : " << new_node->parent->data->first <<  " new_node->data : " <<new_node->data->first << "\n\n";
+				if (new_node->data->first < y->data->first)
 					y->left = new_node;
 				else
 					y->right = new_node;
 				new_node->is_black = 0;
+
+				// std:: cout << "before fix : \n\n\n";
+				// print_node(new_node);
+				// std:: cout << "\n\n\n";
 				rb_insert_fixup(new_node);
+				std:: cout << "new_node->parent->data : " << new_node->parent->data->first <<  " new_node->data : " <<new_node->data->first << "\n\n";
 				_size++;
 				// print_node(new_node);
 				// std::cout << std::endl << std::endl;

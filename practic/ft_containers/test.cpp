@@ -26,11 +26,25 @@ int main()
 	ft::pair<int, int> my_pair(10, 1);
 	ft::pair<int, int> my_pair1(8, 2);
 	ft::pair<int, int> my_pair2(15, 3);
+	ft::pair<int, int> my_pair3(41, 3);
+	ft::pair<int, int> my_pair4(38, 3);
+	ft::pair<int, int> my_pair5(31, 3);
+	ft::pair<int, int> my_pair6(1, 3);
+	ft::pair<int, int> my_pair7(2, 3);
+	// ft::pair<int, int> my_pair8(9, 3);
+
 
 
 	map1.insert(my_pair);
 	map1.insert(my_pair1);
 	map1.insert(my_pair2);
+	map1.insert(my_pair3);
+	map1.insert(my_pair4);
+	map1.insert(my_pair5);
+	map1.insert(my_pair6);
+	map1.insert(my_pair7);
+	// map1.insert(my_pair8);
+
 
 	map1.print_map();
 

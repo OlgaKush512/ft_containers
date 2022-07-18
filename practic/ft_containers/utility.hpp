@@ -12,14 +12,9 @@ namespace ft
 		first_type	first;
 		second_type	second;
 
-		pair() : first(first_type()), second(second_type()) 
-		{
-			std::cout << "Default constructor of pair" << std:: endl;
-		};
-		pair( const first_type& x, const second_type& y ) : first(x), second(y)
-		{
-			std::cout << "Parametric constructor of pair, x = " <<  x << " y = " << y << std:: endl;
-		};
+		pair() : first(first_type()), second(second_type()) {};
+		
+		pair( const first_type& x, const second_type& y ) : first(x), second(y)  {};
 
 		template< class V, class M >
 		pair( const pair<V, M>& p ) : first(p.first), second(p.second) {};
