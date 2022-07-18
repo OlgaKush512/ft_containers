@@ -56,6 +56,27 @@
 		"bitset": "cpp",
 		"hashtable": "cpp",
 		"map": "cpp",
-		"cinttypes": "cpp"
+		"cinttypes": "cpp",
+		"__config": "cpp",
+		"__debug": "cpp",
+		"__functional_base": "cpp",
+		"__locale": "cpp",
+		"__mutex_base": "cpp",
+		"__nullptr": "cpp",
+		"__string": "cpp",
+		"__threading_support": "cpp",
+		"__tuple": "cpp",
+		"chrono": "cpp",
+		"complex": "cpp",
+		"cstring": "cpp",
+		"ctime": "cpp",
+		"iomanip": "cpp",
+		"ios": "cpp",
+		"locale": "cpp",
+		"mutex": "cpp",
+		"queue": "cpp",
+		"ratio": "cpp",
+		"stack": "cpp",
+		"__memory": "cpp"
 	}
 }
