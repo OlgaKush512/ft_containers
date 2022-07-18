@@ -28,8 +28,8 @@ namespace ft {
 			typedef typename node_allocator::pointer					node_pointer;
 
 
-			typedef allocator_type::size_t								size_type;
-			typedef allocator_type::ptrdiff_t							difference_type;
+			typedef typename std::size_t								size_type;
+			typedef typename std::ptrdiff_t								difference_type;
 
 			
 
@@ -78,11 +78,11 @@ namespace ft {
 				_nil = _node_alloc.allocate(1);
 				_node_alloc.construct(_nil, Node<Value>());
 				_nil->is_nil = true;
-				_nil->is_nil = true;
+				_nil->is_black = true;
 				_header = _node_alloc.allocate(1);
 				_node_alloc.construct(_header, Node<Value>());
 				_header->is_nil = false;
-				_header->is_nil = true;
+				_header->is_black = true;
 				_header->data = _alloc.allocate(1);
 				_alloc.construct(_header->data, Value());
 			}
@@ -97,6 +97,11 @@ namespace ft {
 				return (node->is_nil);
 			}
 
+			bool	_is_header(node_pointer node)
+			{
+				return (node == _header);
+			}
+
 			//ROTATION
 
 			void	_left_rotate(node_pointer node)
@@ -106,12 +111,8 @@ namespace ft {
 				node->right = child->left;
 				child->left->parent = node;
 				child->parent = node->parent;
-				if (node->parent->is_nil)
-				{
-					child->is_root = 1;
+				if (node->parent == _header)
 					_root = child;
-					node->is_root = 0;
-				}
 				else if (node == node->parent->left)
 					node->parent->left = child;
 				else
@@ -120,19 +121,15 @@ namespace ft {
 				node->parent = child;
 			}
 
-			void	_right_rotate(node_pointer *node)
+			void	_right_rotate(node_pointer node)
 			{
-				node_pointer *child = node->left;
+				node_pointer child = node->left;
 
 				node->left = child->right;
 				child->right->parent = node;
 				child->parent = node->parent;
-				if (node->parent->is_nil)
-				{
-					child->is_root = 1;
-					g_root = child;
-					node->is_root = 0;
-				}
+				if (node->parent == _header)
+					_root = child;
 				else if (node == node->parent->left)
 					node->parent->left = child;
 				else if (node == node->parent->right)
@@ -145,14 +142,18 @@ namespace ft {
 
 			node_pointer	search(value_type value, node_pointer node)
 			{
-				if (!node || is_nill(node))
+				if (!node || _is_nill(node))
 					return (NULL);
-				if (_compare(_value, node->_value))
-					search(value, node->_left);
-				if (_compare(*node->_value, value))
-					search(value, node->_right);
+				if (_compare(value, *node->data))
+					return (search(value, node->left));
+				if (_compare(*node->data, value))
+					return (search(value, node->right));
 				return (node);
 			}
+
+			//PRINTING
+
+			
 
 		public:
 
@@ -162,26 +163,52 @@ namespace ft {
 				_alloc(alloc), _compare(comp), _size(0)
 			{
 				_init_nil_head();
-				_root = head;
+				_root = _header;
 			};
 
 			RBTree() : _alloc(allocator_type()), _compare(value_compare()), _size(0)
 			{
 				_init_nil_head();
-				_root = head;
+				_root = _header;
 			};
-			RBTree() {}; // range
+			// RBTree() {}; // range
 			RBTree(RBTree&) {}; // copy
 			RBTree& operator=(RBTree&) {}; // =
 
-			~RBTree() {}; //destructor
+			~RBTree()
+			{
+				if(_root != _header)
+				{
+					clear_tree(_root);
+				}
+				_node_alloc.destroy(_nil);
+				_node_alloc.deallocate(_nil, 1);
+				_alloc.destroy(_header->data);
+				_alloc.deallocate(_header->data, 1);
+				_node_alloc.destroy(_header);
+				_node_alloc.deallocate(_header, 1);
+
+			};
+
+			void	clear_tree(node_pointer root)
+			{
+				if (!root || root->is_nil)
+					return;
+				clear_tree(root->left);
+				clear_tree(root->right);
+				_alloc.destroy(root->data);
+				_alloc.deallocate(root->data, 1);
+				_node_alloc.destroy(root);
+				_node_alloc.deallocate(root, 1);
+			}
+		
 
 			// iterators:
 
 			iterator begin()
 			{
 				if (_size == 0)
-					return (iterator(_head));
+					return (iterator(_header));
 				else
 					return (iterator(_min(_root)));
 			}
@@ -189,19 +216,19 @@ namespace ft {
 			const_iterator begin()const
 			{
 				if (_size == 0)
-					return (const_iterator(_head));
+					return (const_iterator(_header));
 				else
 					return (const_iterator(_min(_root)));
 			}
 			
 			iterator end()
 			{
-				return (iterator(_head));
+				return (iterator(_header));
 			}
 			
 			const_iterator end()const
 			{
-				return (const_iterator(_head));
+				return (const_iterator(_header));
 			}
 			
 			reverse_iterator rbegin()
@@ -239,72 +266,162 @@ namespace ft {
 				return (_size);
 			}
 
+			void	print_node(node_pointer node)
+			{
+				std::cout <<"Node : " << &node << std::endl
+				<<"is_root : " << _is_root(node) << std::endl
+				<<"data : " << node->data->first << std::endl
+				<<"is_black : " << node->is_black << std::endl
+				<<"is_nil : " << node->is_nil << std::endl
+				<<"left : " << node->left << std::endl
+				<<"right : " << node->right << std::endl
+				<<"parent : " << node->parent << std::endl
+				<<"root : " << _root->data->first << std::endl << std::endl << std::endl;
+			}
+
+			void	print_tree(node_pointer root)
+			{
+				if (!root || root->is_nil)
+					return;
+				print_node(root);
+				print_tree(root->left);
+				print_tree(root->right);
+			}
+
+			node_pointer get_root()
+			{
+				return (_root);
+			}
 
 			// modifiers:
 
-			pair<iterator, bool>	insert(const value_type& x) // value_type = pair
+			void	rb_insert_fixup(node_pointer node)
 			{
-				node_pointer is_existe = search(x, this->_root);
-				if (is_existe)
-					return (is_existe, false);
-
-				node_pointer new_node = create_node(new_node)
-				
+				node_pointer oncle;
+				if (node != _root && node->parent != _root)
+				{
+					while (node != _root && node->parent->is_black == false)
+					{
+						if (node->parent == node->parent->parent->left)
+						{
+							oncle = node->parent->parent->right;
+							if (oncle->is_black == false || _is_nill(oncle))
+							{
+								node->parent->is_black = true;
+								oncle->is_black = true;
+								node->parent->parent->is_black = false;
+								node = node->parent->parent;
+							}
+							else
+							{
+								if (node == node->parent->right)
+								{
+									node = node->parent;
+									_left_rotate(node);
+								}
+								node->parent->is_black = true;
+								node->parent->parent->is_black = false;
+								_right_rotate(node->parent->parent);
+							}
+						}
+						else
+						{
+							oncle = node->parent->parent->left;
+							if (oncle->is_black == false)
+							{
+								node->parent->is_black = true;
+								oncle->is_black = true;
+								node->parent->parent->is_black = false;
+								node = node->parent->parent;
+							}
+							else
+							{
+								if (node == node->parent->left)
+								{
+									node = node->parent;
+									_right_rotate(node);
+								}
+								node->parent->is_black = true;
+								node->parent->parent->is_black = false;
+								_left_rotate(node->parent->parent);
+							}
+						}
+					}
+				}
+				_root->is_black = 1;
 			}
 
-			void rb_insert(t_node **root, int data)
+			pointer	create_value(const value_type &value)
 			{
-				t_node *new = create(*root, data);
-				t_node *x = *root;
-				if (*root == NULL)
+				pointer new_val = _alloc.allocate(1);
+				_alloc.construct(new_val, value);
+				return new_val;
+			}
+				
+
+			pair<iterator, bool>	insert(const value_type& value) // value_type = pair
+			{
+				node_pointer is_existe = search(value, this->_root);
+				if (is_existe && !_is_nill(is_existe) && !_is_header(is_existe))
 				{
-					*root = new;
-					// printf("data of root: %d\n", new->data);
-					return;
+					std:: cout << "node exist\n";
+					return (ft::make_pair(is_existe, false));
+
 				}
-				// printf("data of root1: %d\n", x->data);
-				t_node *y = NULL;
-				x = *root;
-				while (x->is_nil != 1)
+
+				
+				node_pointer new_node = _node_alloc.allocate(1);
+				_node_alloc.construct(new_node, Node<value_type>(create_value(value)));
+				new_node->is_nil = false;
+				new_node->is_black = false;
+				new_node->left = _nil;
+				new_node->right = _nil;
+				if (_root == _header)
+				{
+					std:: cout << "Nous sommes la\n";
+					_root = new_node;
+					new_node->parent = _header;
+					new_node->is_black = true;
+					return (ft::make_pair(new_node, true));
+				}
+				node_pointer y = NULL;
+				node_pointer x = _root;
+				while (!_is_nill(x))
 				{
 					y = x;
-					if (new->data < x->data)
+					if (new_node->data < x->data)
 						x = x->left;
 					else
 						x = x->right;
 				}
-				new->parent = y;
-				if (y == NULL)
-					*root = new;
-				else if (new->data < y->data)
-					y->left = new;
+				new_node->parent = y;
+				if (new_node->data < y->data)
+					y->left = new_node;
 				else
-					y->right = new;
-				new->left = create_nil(new);
-				new->right = create_nil(new);
-				new->is_black = 0;
-				rb_insert_fixup(*root, new);
+					y->right = new_node;
+				new_node->is_black = 0;
+				rb_insert_fixup(new_node);
+				_size++;
+				// print_node(new_node);
+				// std::cout << std::endl << std::endl;
+				return (ft::make_pair(new_node, true));
 			}
 
 
-
-
-
-
-			iterator insert(iterator position, const value_type& x);
+			// iterator insert(iterator position, const value_type& x);
 			
-			template <class InputIterator>
-			void insert(InputIterator first, InputIterator last);
+			// template <class InputIterator>
+			// void insert(InputIterator first, InputIterator last);
 
-			void erase(iteratorposition);
+			// void erase(iterator position);
 
-			size_type erase(const key_type& x);
+			// size_type erase(const key_type& x);
 
-			void erase(iterator first, iterator last); 
+			// void erase(iterator first, iterator last); 
 			
-			void swap(map<Key,T,Compare,Allocator>&);
+			// void swap(map<Key,T,Compare,Allocator>&);
 
-			void clear();
+			// void clear();
 
 	};
 };

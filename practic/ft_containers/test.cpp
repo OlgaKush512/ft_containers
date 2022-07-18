@@ -1,7 +1,8 @@
 #include <iostream>
 #include <string>
 #include <iomanip>
-#include <map>
+// #include <map>
+#include "map.hpp"
  
 template<typename Map>
 void print_map(Map& m)
@@ -21,25 +22,33 @@ struct PointCmp {
  
 int main()
 {
-  // (1) Default constructor
-  std::map<std::string, int> map1;
-  map1["something"] = 69;
-  map1["anything"] = 199;
-  map1["that thing"] = 50;
-  std::cout << "map1 = "; print_map(map1);
-
-  std::map<std::string, int>::iterator  iter(map1.begin());
-  std::cout << "iter = " << iter->first << std::endl;
-  iter++;
-  std::cout << "iter = " << iter->first << std::endl;
-  iter++;
-  std::cout << "iter = " << iter->first << std::endl;
-   iter++;
-  std::cout << "iter = " << iter->first << std::endl;
+	ft::map<int, int> map1;
+	ft::pair<int, int> my_pair(10, 1);
+	ft::pair<int, int> my_pair1(8, 2);
+	ft::pair<int, int> my_pair2(15, 3);
 
 
+	map1.insert(my_pair);
+	map1.insert(my_pair1);
+	map1.insert(my_pair2);
 
+	map1.print_map();
 
+}
+
+//   map1["something"] = 69;
+//   map1["anything"] = 199;
+//   map1["that thing"] = 50;
+//   std::cout << "map1 = "; print_map(map1);
+
+//   std::map<std::string, int>::iterator  iter(map1.begin());
+//   std::cout << "iter = " << iter->first << std::endl;
+//   iter++;
+//   std::cout << "iter = " << iter->first << std::endl;
+//   iter++;
+//   std::cout << "iter = " << iter->first << std::endl;
+//    iter++;
+//   std::cout << "iter = " << iter->first << std::endl;
  
 //   // (2) Range constructor
 //   std::map<std::string, int> iter(map1.find("anything"), map1.end());
@@ -98,4 +107,3 @@ int main()
 //       std::cout << "The magnitude of (" << p.first.x
 //                 << ", " << p.first.y << ") is "
 //                 << p.second << '\n';
-}

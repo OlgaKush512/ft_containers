@@ -36,10 +36,16 @@ namespace ft
 			right(other.right), is_nil(other.is_nil), is_black(other.is_black) {};
 
 
-		Node&	operator = (const Node &other) : data(other.data), parent(other.parent), left(other.left),
-			right(other.right), is_nil(other.is_nil), is_black(other.is_black) {};
+		Node&	operator = (const Node &other)
 		{
-			return (this);
+			
+			data = other.data;
+			parent = other.parent;
+			left = other.left;
+			right = other.right;
+			is_nil = other.is_nil;
+			is_black = other.is_black;
+			return (*this);
 		}
 
 		virtual ~Node() {};
@@ -56,7 +62,7 @@ namespace ft
 			typedef typename iterator_traits<T*>::difference_type					difference_type;
 			typedef typename iterator_traits<T*>::pointer							pointer;
 			typedef typename iterator_traits<T*>::reference							reference;
-			typedef typename Node<typename ft::remove_const<value_type>::type>*		node_pointer;
+			typedef Node<typename ft::remove_const<value_type>::type>*		node_pointer;
 
 		private:
 
@@ -91,11 +97,10 @@ namespace ft
 				*this = other;
 			}
 
-			TreeIter& operator=(TreeIter const &other)
-			{
-				_node = other.get_node();
-				return (*this);
-			}
+			TreeIter& operator=(const TreeIter<typename ft::remove_const<value_type>::type>& other) {
+			this->_node = other.node();
+			return *this;
+		}
 
 			~TreeIter() {};
 
@@ -103,12 +108,12 @@ namespace ft
 
 			reference operator*() const
 			{
-				return (*(_node.data));
+				return (*(_node->data));
 			};
 
 			pointer operator->() const
 			{
-				return (_node.data);
+				return (_node->data);
 			};
 				
 			TreeIter& operator++()
@@ -118,7 +123,7 @@ namespace ft
 				else
 				{
 					node_pointer found = _node->parent;
-					while (found != NULL && _node = found->right)
+					while (found != NULL && _node == found->right)
 					{
 						_node = found;
 						found = found->parent;
@@ -136,7 +141,7 @@ namespace ft
 				else
 				{
 					node_pointer found = _node->parent;
-					while (found != NULL && _node = found->right)
+					while (found != NULL && _node == found->right)
 					{
 						_node = found;
 						found = found->parent;
@@ -153,7 +158,7 @@ namespace ft
 				else
 				{
 					node_pointer found = _node->parent;
-					while (found != NULL && _node = found->left)
+					while (found != NULL && _node == found->left)
 					{
 						_node = found;
 						found = found->parent;
@@ -171,7 +176,7 @@ namespace ft
 				else
 				{
 					node_pointer found = _node->parent;
-					while (found != NULL && _node = found->left)
+					while (found != NULL && _node == found->left)
 					{
 						_node = found;
 						found = found->parent;

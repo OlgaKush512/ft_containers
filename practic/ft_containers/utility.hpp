@@ -6,23 +6,25 @@ namespace ft
 	template<class T, class U >
 	struct pair
 	{
-		typedef T	first _type;
+		typedef T	first_type;
 		typedef U	second_type;
 
-		first _type	first;
+		first_type	first;
 		second_type	second;
 
-		pair() : first(first_type()), second(second_type()) {};
-		pair( const first_type& x, const second_type& y ) : first(x), second(y) {};
-
-		template< class T, class U >
-		pair( const pair<T, U>& p ) : first(p.first), second(p.second) {};
-
-		pair( const pair& p )
+		pair() : first(first_type()), second(second_type()) 
 		{
-			first = p.first;
-			second = p.second;
+			std::cout << "Default constructor of pair" << std:: endl;
 		};
+		pair( const first_type& x, const second_type& y ) : first(x), second(y)
+		{
+			std::cout << "Parametric constructor of pair, x = " <<  x << " y = " << y << std:: endl;
+		};
+
+		template< class V, class M >
+		pair( const pair<V, M>& p ) : first(p.first), second(p.second) {};
+
+		pair( const pair& p ) : first(p.first), second(p.second) {};
 
 		pair& operator=(const pair& other)
 		{
