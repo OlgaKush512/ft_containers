@@ -29,7 +29,7 @@ namespace ft
 			bool		is_nil;
 			bool		is_black;
 
-		Node (Value *value = 0) : data(value), parent(0), left(0),
+		explicit Node (Value *value = 0) : data(value), parent(0), left(0),
 			right(0), is_nil(false), is_black(false) {};
 
 		Node (const Node &other) : data(other.data), parent(other.parent), left(other.left),
@@ -62,7 +62,8 @@ namespace ft
 			typedef typename iterator_traits<T*>::difference_type					difference_type;
 			typedef typename iterator_traits<T*>::pointer							pointer;
 			typedef typename iterator_traits<T*>::reference							reference;
-			typedef Node<typename ft::remove_const<value_type>::type>*		node_pointer;
+			typedef Node<typename ft::remove_const<value_type>::type>*				node_pointer;
+
 
 		private:
 
@@ -91,20 +92,28 @@ namespace ft
 		// CONSTRUCTORS
 
 			TreeIter() {};
-			TreeIter(void *node) : _node(static_cast<node_pointer>(node)) {};
-			TreeIter(TreeIter<typename ft::remove_const<value_type>::type>* const &other)
+			TreeIter(void* node) : _node(static_cast<node_pointer>(node)) {};
+
+			TreeIter(const TreeIter<typename ft::remove_const<value_type>::type> &other)
 			{
 				*this = other;
 			}
 
-			TreeIter& operator=(const TreeIter<typename ft::remove_const<value_type>::type>& other) {
-			this->_node = other.node();
-			return *this;
-		}
+			TreeIter& operator=(const TreeIter<typename ft::remove_const<value_type>::type>& other)
+			{
+				this->_node = other.get_node();
+				return *this;
+			}
 
 			~TreeIter() {};
 
 		// OPERATIONS
+
+			// operator  TreeIter<const T> () const
+			// {
+			// 	TreeIter<const T> citer(_node);
+			// 	return (citer);
+			// };
 
 			reference operator*() const
 			{
@@ -113,12 +122,14 @@ namespace ft
 
 			pointer operator->() const
 			{
-				return (_node->data);
+				if (_node)
+					return (_node->data);
+				return (NULL);
 			};
 				
 			TreeIter& operator++()
 			{
-				if (!_node->right->is_nil)
+				if (_node->right && !_node->right->is_nil)
 					_node = _min_node(_node->right);
 				else
 				{
@@ -136,7 +147,7 @@ namespace ft
 			TreeIter  operator++(int)
 			{
 				TreeIter temp = *this;
-				if (!_node->right->is_nil)
+				if (_node->right && !_node->right->is_nil)
 					_node = _min_node(_node->right);
 				else
 				{
@@ -153,17 +164,20 @@ namespace ft
 
 			TreeIter& operator--()
 			{
-				if (!_node->left->is_nil)
+				if (_node && _node->left && !_node->left->is_nil)
 					_node = _max_node(_node->left);
 				else
 				{
-					node_pointer found = _node->parent;
-					while (found != NULL && _node == found->left)
+					if ( _node)
 					{
+						node_pointer found = _node->parent;
+						while (found != NULL && _node == found->left)
+						{
+							_node = found;
+							found = found->parent;
+						}
 						_node = found;
-						found = found->parent;
 					}
-					_node = found;
 				}
 				return (*this);
 			};
@@ -171,7 +185,7 @@ namespace ft
 			TreeIter  operator--(int)
 			{
 				TreeIter temp = *this;
-				if (!_node->left->is_nil)
+				if (_node->left && !_node->left->is_nil)
 					_node = _max_node(_node->left);
 				else
 				{
@@ -187,10 +201,27 @@ namespace ft
 			};
 
 		// getter
-		node_pointer get_node() const {
-			return _node;
+		node_pointer get_node() const
+		{
+			if (_node)
+				return _node;
+			else
+				return (NULL);
 		}
 	};
+
+	template <typename T1, typename T2>
+	bool operator==(const TreeIter<T1> &lhs, const TreeIter<T2> &rhs)
+	{
+		return (lhs.get_node() == rhs.get_node());
+	}
+
+	template <typename T1, typename T2>
+	bool operator!=(const TreeIter<T1> &lhs, const TreeIter<T2> &rhs)
+	{
+		return (lhs.get_node() != rhs.get_node());
+	}
+
 };
 
 

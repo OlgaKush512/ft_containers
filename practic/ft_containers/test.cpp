@@ -43,10 +43,26 @@ int main()
 	map1.insert(my_pair5);
 	map1.insert(my_pair6);
 	map1.insert(my_pair7);
-	// map1.insert(my_pair8);
 
+	ft::map<int, int>::iterator it;
+	it = map1.begin();
+	std::cout << (it.get_node())->data->first << '\n';
+	it++;
+	std::cout << (it.get_node())->data->first << '\n';
+	it++;
+	std::cout << (it.get_node())->data->first << '\n';
 
+	map1.erase(it);
 	map1.print_map();
+
+	ft::map<int, int>::const_iterator ite;
+	ite = map1.find(15);
+
+	// map1.erase(ite);
+	map1.print_map();
+
+	// std::cout << (it.get_node())->data->first << '\n';
+
 
 }
 
