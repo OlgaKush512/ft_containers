@@ -73,7 +73,7 @@ namespace ft
 			{
 				node_pointer tmp = node;
 
-				while(tmp->left && !tmp->left->is_nil)
+				while(tmp && tmp->left != NULL && !tmp->left->is_nil)
 					tmp = tmp->left;
 				return (tmp);
 			}
@@ -82,7 +82,7 @@ namespace ft
 			{
 				node_pointer tmp = node;
 
-				while(tmp->right && !tmp->right->is_nil)
+				while(tmp && tmp->right != NULL && !tmp->right->is_nil)
 					tmp = tmp->right;
 				return (tmp);
 			}
@@ -129,49 +129,14 @@ namespace ft
 				
 			TreeIter& operator++()
 			{
-				if (_node->right && !_node->right->is_nil)
-					_node = _min_node(_node->right);
-				else
+				if (_node)
 				{
-					node_pointer found = _node->parent;
-					while (found != NULL && _node == found->right)
-					{
-						_node = found;
-						found = found->parent;
-					}
-					_node = found;
-				}
-				return (*this);
-			};
-			
-			TreeIter  operator++(int)
-			{
-				TreeIter temp = *this;
-				if (_node->right && !_node->right->is_nil)
-					_node = _min_node(_node->right);
-				else
-				{
-					node_pointer found = _node->parent;
-					while (found != NULL && _node == found->right)
-					{
-						_node = found;
-						found = found->parent;
-					}
-					_node = found;
-				}
-				return (temp);
-			};
-
-			TreeIter& operator--()
-			{
-				if (_node && _node->left && !_node->left->is_nil)
-					_node = _max_node(_node->left);
-				else
-				{
-					if ( _node)
+					if ( _node->right && !_node->right->is_nil)
+						_node = _min_node(_node->right);
+					else
 					{
 						node_pointer found = _node->parent;
-						while (found != NULL && _node == found->left)
+						while (found != NULL && _node == found->right)
 						{
 							_node = found;
 							found = found->parent;
@@ -182,20 +147,67 @@ namespace ft
 				return (*this);
 			};
 			
+			TreeIter  operator++(int)
+			{
+				TreeIter temp = *this;
+				
+					if (_node->right && !_node->right->is_nil)
+					_node = _min_node(_node->right);
+					else
+					{
+						node_pointer found = _node->parent;
+						while (found != NULL && _node == found->right)
+						{
+							_node = found;
+							found = found->parent;
+						}
+						_node = found;
+					}
+				
+				
+				return (temp);
+			};
+
+			TreeIter& operator--()
+			{
+				if (_node)
+				{
+					if (_node && _node->left && !_node->left->is_nil)
+					_node = _max_node(_node->left);
+					else
+					{
+						if ( _node)
+						{
+							node_pointer found = _node->parent;
+							while (found != NULL && _node == found->left)
+							{
+								_node = found;
+								found = found->parent;
+							}
+							_node = found;
+						}
+					}
+				}
+				return (*this);
+			};
+			
 			TreeIter  operator--(int)
 			{
 				TreeIter temp = *this;
-				if (_node->left && !_node->left->is_nil)
-					_node = _max_node(_node->left);
-				else
+				if (_node)
 				{
-					node_pointer found = _node->parent;
-					while (found != NULL && _node == found->left)
+					if (_node->left && !_node->left->is_nil)
+					_node = _max_node(_node->left);
+					else
 					{
+						node_pointer found = _node->parent;
+						while (found != NULL && _node == found->left)
+						{
+							_node = found;
+							found = found->parent;
+						}
 						_node = found;
-						found = found->parent;
 					}
-					_node = found;
 				}
 				return (temp);
 			};

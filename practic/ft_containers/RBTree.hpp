@@ -59,7 +59,7 @@ namespace ft {
 			{
 				node_pointer tmp = node;
 
-				while(tmp->left && !tmp->left->is_nil)
+				while(tmp != NULL && !tmp->is_nil && tmp->left && !tmp->left->is_nil)
 					tmp = tmp->left;
 				return (tmp);
 			}
@@ -68,7 +68,7 @@ namespace ft {
 			{
 				node_pointer tmp = node;
 
-				while(tmp->right && !tmp->right->is_nil)
+				while(tmp != NULL && !tmp->is_nil && tmp->right && !tmp->right->is_nil && tmp->right != _header)
 					tmp = tmp->right;
 				return (tmp);
 			}
@@ -81,7 +81,7 @@ namespace ft {
 				_nil->is_black = true;
 				_header = _node_alloc.allocate(1);
 				_node_alloc.construct(_header, Node<Value>());
-				_header->is_nil = false;
+				// _header->is_nil = false;
 				_header->is_black = true;
 				_header->data = _alloc.allocate(1);
 				_alloc.construct(_header->data, Value());
@@ -94,7 +94,7 @@ namespace ft {
 			
 			bool	_is_nill(node_pointer node) const
 			{
-				return (node->is_nil);
+				return (node->is_nil || node == _header);
 			}
 
 			bool	_is_header(node_pointer node) const
@@ -113,7 +113,7 @@ namespace ft {
 				if (!_is_nill(child->left) && !_is_header(child->left))
 					child->left->parent = node;
 				child->parent = node->parent;
-				if (node->parent == _header)
+				if (node->parent == NULL)// 1st change
 					_root = child;
 				else if (node == node->parent->left)
 					node->parent->left = child;
@@ -132,7 +132,7 @@ namespace ft {
 				if (!_is_nill(child->right) && !_is_header(child->right))
 					child->right->parent = node;
 				child->parent = node->parent;
-				if (node->parent == _header)
+				if (node->parent == NULL)// 1st change
 					_root = child;
 				else if (node == node->parent->left)
 					node->parent->left = child;
@@ -193,7 +193,7 @@ namespace ft {
 
 			void	_clear_tree(node_pointer root)
 			{
-				if (!root || root->is_nil)
+				if (!root || root->is_nil || root == _header)
 					return;
 				_clear_tree(root->left);
 				_clear_tree(root->right);
@@ -297,13 +297,15 @@ namespace ft {
 
 			node_pointer	_insert_to_node(node_pointer root, node_pointer new_node)
 			{
-				if (_compare(*new_node->data, *root->data)){
-					if (!_is_nill(root->left) && !_is_header(root->left))
+				if (_compare(*new_node->data, *root->data))
+				{
+					if (!_is_nill(root) && !_is_nill(root->left) && !_is_header(root->left))
 						return (_insert_to_node(root->left, new_node));
 					root->left = new_node;
 				}
-				else{
-					if (!_is_nill(root->right))
+				else
+				{
+					if (!_is_nill(root) && root != _header &&!_is_nill(root->right) && !_is_header(root->left)) // 2nd change
 						return (_insert_to_node(root->right, new_node));
 					root->right = new_node;
 				}
@@ -402,11 +404,11 @@ namespace ft {
 				}
 				if (other->right->is_nil)
 					my_node->right = _nil;
-				// else if (other->right->right == NULL)
-				// {
-				// 	my_node->right = _header;
-				// 	_header->parent = my_node;
-				// }
+				else if (other->right->right == NULL)//3rd change
+				{
+					my_node->right = _header;
+					_header->parent = my_node;
+				}
 				else{
 					my_node->right = copy_node(other->right);
 					my_node->right->parent = my_node;
@@ -460,9 +462,6 @@ namespace ft {
 			{
 				if (this == &src)
 					return *this;
-				this->_node_alloc = src._node_alloc;
-				this->_alloc = src._alloc;
-				this->_compare = src._compare;
 				if (!this->_root)
 					_init_nil_head();
 				else
@@ -474,7 +473,10 @@ namespace ft {
 					this->_root = copy_node(src._root);
 					copy_child(this->_root, src._root);
 				}
-				this->_size = src._size;
+				this->_size = src._size;//4th change
+				this->_node_alloc = src._node_alloc;
+				this->_alloc = src._alloc;
+				this->_compare = src._compare;
 				return *this;
 			}
 
@@ -502,7 +504,7 @@ namespace ft {
 					return (iterator(_min(_root)));
 			}
 			
-			const_iterator begin()const
+			const_iterator begin() const
 			{
 				if (_size == 0)
 					return (const_iterator(_header));
@@ -523,10 +525,6 @@ namespace ft {
 			reverse_iterator rbegin()
 			{
 				return (reverse_iterator(end()));
-				// if (_size == 0)
-				// 	return (reverse_iterator(_head));
-				// else
-				// 	return (reverse_iterator(_max(_root)));
 			}
 			
 			const_reverse_iterator rbegin() const
@@ -545,6 +543,7 @@ namespace ft {
 			}
 
 			// capacity:
+			
 			bool empty() const
 			{
 				return (_size == 0);
@@ -574,29 +573,7 @@ namespace ft {
 				return (_root);
 			}
 
-			// element access:
-
-			// value_type take_value(const value_type& x)
-			// {
-			// 	node_pointer is_existe = search(value, this->_root);
-			// 	if (is_existe && !_is_nill(is_existe) && !_is_header(is_existe))
-			// 		return (is_existe->data);
-			// 	else
-			// 	{
-			// 		iterator it = insert(x).first;
-			// 		return (*it)->data;
-			// 	}
-			// }
-
-			size_type erase(const value_type& x)
-			{
-				iterator position = find(x);
-
-				if (position != end())
-					erase(position);
-				return (position != end());
-			}
-
+			
 			// modifiers:
 
 			pair<iterator, bool>	insert(const value_type& value) // value_type = pair
@@ -608,20 +585,29 @@ namespace ft {
 				if (_root == _header)
 				{
 					_root = new_node;
-					new_node->parent = _header;
+					_root->parent = NULL; //5th change!
+					_header->parent = _root; //6th change!
+					_root->right = _header; //9th change!
 					new_node->is_black = true;
 					_size++;
 					return (ft::make_pair(new_node, true));
 				}
 				node_pointer y = NULL;
 				node_pointer x = _root;
-				while (!_is_nill(x))
+				int i = 0;
+				while (!_is_nill(x) && !_is_header(x))
 				{
 					y = x;
 					if (new_node->data->first < x->data->first)
+					{
 						x = x->left;
+					}
 					else
+					{
 						x = x->right;
+					}
+					
+					i++;
 				}
 				new_node->parent = y;
 				if (new_node->data->first < y->data->first)
@@ -631,6 +617,9 @@ namespace ft {
 				new_node->is_black = 0;
 				_insert_fixup(new_node);
 				_size++;
+				node_pointer max_of_tree = _max(_root);//
+				max_of_tree->right = _header;//
+				_header->parent = max_of_tree;// 12th change
 				return (ft::make_pair(new_node, true));
 			}
 
@@ -643,31 +632,34 @@ namespace ft {
 				if (_root == _header)
 				{
 					_root = new_node;
-					new_node->parent = _header;
+					_root->parent = NULL; //5th change!
+					_header->parent = _root; //6th change!
+					_root->right = _header; //9th change!
 					new_node->is_black = true;
 					_size++;
 					return (iterator(new_node));
 				}
 				if (position == begin())
 				{
-				if (position != end() && _compare(value, *position))
-					_insert_into_tree(new_node, _min(_root));
-				else
-					_insert_into_tree(new_node, _root);
+					if (position != end() && _compare(value, *position))
+						_insert_into_tree(new_node, _min(_root));
+					else
+						_insert_into_tree(new_node, _root);
 				}
 				else if (position == end())
 				{
-				if (position != begin() && _compare(*(--position), value))
-					_insert_into_tree(new_node, _header->parent);
-				else
-					_insert_into_tree(new_node, _root);
+					if (position != begin() && _compare(*(--position), value))
+						_insert_into_tree(new_node, _header->parent);
+					else
+						_insert_into_tree(new_node, _root);
 				}
 				else
 					_insert_into_tree(new_node, _root);
 				_insert_fixup(new_node);
 				_size++;
-				node_pointer max_of_tree = _max(_root);
-				max_of_tree->right = _header;
+				node_pointer max_of_tree = _max(_root);//
+				max_of_tree->right = _header;//
+				_header->parent = max_of_tree;// 12th change
 				return (iterator(new_node));	
 			}
 
@@ -679,6 +671,16 @@ namespace ft {
 					insert(*first);
 			}
 
+			size_type erase(const value_type& x)
+			{
+				iterator position = find(x);
+
+
+				if (position != end())
+					erase(position);
+				return (position != end());
+			}
+
 			void erase(iterator position)
 			{
 				node_pointer z = position.get_node();
@@ -686,50 +688,54 @@ namespace ft {
 				node_pointer x;
 				node_pointer y = z;
 
-				bool		origin_color = y->is_black;
-				if (z->left->is_nil)
+				if (z && !_is_nill(z) && !_is_header(z))
 				{
-					x = z->right;
-					_rb_transplant(z, z->right);
-				}
-				else if (z->right->is_nil)
-				{
-					x = z->left;
-					_rb_transplant(z, z->left);
-				}
-				else
-				{
-					y = _min(z->right);
-					origin_color = y->is_black;
-					x = y->right;
-					if (y->parent == z)
-						x->parent = y;
+					bool	origin_color = z->is_black;
+					if (z->left->is_nil)
+					{
+						x = z->right;
+						_rb_transplant(z, z->right);
+					}
+					else if (z->right->is_nil)
+					{
+						x = z->left;
+						_rb_transplant(z, z->left);
+					}
 					else
 					{
-						_rb_transplant(y, y->right);
-						y->right = z->right;
-						y->right->parent = y;
+						y = _min(z->right);
+						origin_color = y->is_black;
+						x = y->right;
+						if (y->parent == z)
+							x->parent = y;
+						else
+						{
+							_rb_transplant(y, y->right);
+							y->right = z->right;
+							y->right->parent = y;
+						}
+						_rb_transplant(z,y);
+						y->left = z->left;
+						y->left->parent = y;
+						y->is_black = z->is_black;
 					}
-					_rb_transplant(z,y);
-					y->left = z->left;
-					y->left->parent = y;
-					y->is_black = z->is_black;
+					_clear_node(for_delete);
+					if (origin_color == true)
+						_deletion_fixup(x);
+					_size--;
+					_nil->parent = NULL;//13th change
+					if (_size == 0)
+						_root = _header;
+					else // 7th change
+					{
+						if (_size != 1)
+							x = _max(_root);
+						else
+							x = _root;
+						x->right = _header;
+						_header->parent = x;
+					}
 				}
-				_clear_node(for_delete);
-				if (origin_color == true)
-					_deletion_fixup(x);
-				_size--;
-				// _nil->parent = NULL;
-				if (_size == 0)
-					_root = _header;
-				// else{
-				// 	if (_size != 1)
-				// 		x = _max(_root);
-				// 	else
-				// 		x = _root;
-				// 	x->right = _header;
-				// 	_header->parent = x;
-				// }
 			}
 
 			void erase(iterator first, iterator last)
@@ -742,15 +748,28 @@ namespace ft {
 			{
 				RBTree temp = other;
 
-				other = *this;
-				*this = temp;
+				other._root = this->_root;
+				other._nil = this->_nil;
+				other._header = this->_header;
+				other._size = this->_size;
+				other._node_alloc = this->_node_alloc;
+				other._alloc = this->_alloc;
+				other._compare = this->_compare;
+
+				this->_root = temp._root;
+				this->_nil = temp._nil;
+				this->_header = temp._header;
+				this->_size = temp._size;
+				this->_node_alloc = temp._node_alloc;
+				this->_alloc = temp._alloc;
+				this->_compare = temp._compare;
 			}
 
 			void clear()
 			{
 				_clear_tree(_root);
 				_root = _header;
-				// _header = NULL;???
+				_header->parent = NULL;
 				_size = 0;
 			}
 
