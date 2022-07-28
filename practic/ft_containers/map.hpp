@@ -54,6 +54,8 @@ namespace ft {
 						return comp(x.first, y.first);
 					}
 			};
+
+			
 		public:
 
 			typedef RBTree<value_type, value_compare, allocator_type>	tree_type;
@@ -66,7 +68,6 @@ namespace ft {
 		private:
 
 			key_compare		_compare;
-
 			allocator_type	_alloc;
 			tree_type		_tree;
 
@@ -208,10 +209,12 @@ namespace ft {
 			{
 				key_compare		tmp_compare = x._compare;
 				allocator_type	tmp_alloc = x._alloc;
+
 				x._compare = _compare;
 				x._alloc = _alloc;
 				_compare = tmp_compare;
 				_alloc = tmp_alloc;
+
 				_tree.swap(x._tree);
 			}
 
@@ -257,7 +260,6 @@ namespace ft {
 			const_iterator	lower_bound(const key_type& x) const
 			{
 				return (_tree.lower_bound(ft::make_pair(x, mapped_type())));
-
 			}
 
 			iterator	upper_bound(const key_type& x)
@@ -285,13 +287,13 @@ namespace ft {
 				return (_alloc);
 			}
 
-		template <class Key1, class T1, class Compare1, class Allocator1>
-		friend bool operator==(const map<Key1,T1,Compare1,Allocator1>& x,
-						const map<Key1,T1,Compare1,Allocator1>& y);
+		// template <class Key1, class T1, class Compare1, class Allocator1>
+		// friend bool operator==(const map<Key1,T1,Compare1,Allocator1>& x,
+		// 				const map<Key1,T1,Compare1,Allocator1>& y);
 
-		template <class Key1, class T1, class Compare1, class Allocator1>
-		friend bool operator< (const map<Key1,T1,Compare1,Allocator1>& x,
-						const map<Key1,T1,Compare1,Allocator1>& y);
+		// template <class Key1, class T1, class Compare1, class Allocator1>
+		// friend bool operator< (const map<Key1,T1,Compare1,Allocator1>& x,
+		// 				const map<Key1,T1,Compare1,Allocator1>& y);
 
 	};
 
@@ -299,14 +301,14 @@ namespace ft {
 		bool operator==(const map<Key,T,Compare,Allocator>& x,
 						const map<Key,T,Compare,Allocator>& y)
 		{
-			return (x._tree == y._tree);
+			return (x.size() == y.size() && ft::equal(x.begin(), x.end(), y.begin()));
 		}
 
 		template <class Key, class T, class Compare, class Allocator>
 		bool operator< (const map<Key,T,Compare,Allocator>& x,
 						const map<Key,T,Compare,Allocator>& y)
 		{
-			return (x._tree < y._tree);
+			return (ft::lexicographical_compare(x.begin(), x.end(), y.begin(), y.end()));
 		}
 
 		template <class Key, class T, class Compare, class Allocator>

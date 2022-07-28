@@ -59,7 +59,7 @@ namespace ft {
 			{
 				node_pointer tmp = node;
 
-				while(tmp != NULL && !tmp->is_nil && tmp->left && !tmp->left->is_nil)
+				while(tmp != NULL && !_is_nill(tmp) && tmp->left != NULL && !tmp->left->is_nil)
 					tmp = tmp->left;
 				return (tmp);
 			}
@@ -68,7 +68,7 @@ namespace ft {
 			{
 				node_pointer tmp = node;
 
-				while(tmp != NULL && !tmp->is_nil && tmp->right && !tmp->right->is_nil && tmp->right != _header)
+				while(tmp != NULL &&  !_is_nill(tmp) && tmp->right && !tmp->right->is_nil && tmp->right != _header)
 					tmp = tmp->right;
 				return (tmp);
 			}
@@ -207,8 +207,9 @@ namespace ft {
 			{
 				node_pointer w;
 
-				while (x != _root && x->is_black)
+				while (x != _root && x->is_black && !_is_nill(x))
 				{
+					// std::cout << "!!!x->is_nil: " << x->is_nil  << "\n";
 					if (x == x->parent->left)
 					{
 						w = x->parent->right;
@@ -219,25 +220,30 @@ namespace ft {
 							_left_rotate(x->parent);
 							w = x->parent->right;
 						}
-						if (w->left->is_black && w->right->is_black)
+						if (!_is_nill(x))
 						{
-							w->is_black = false;
-							x = x->parent;
-						}
-						else
-						{
-							if (w->right->is_black)
+							if (w->left->is_black && w->right->is_black)
 							{
-								w->left->is_black = true;
 								w->is_black = false;
-								_right_rotate(w);
-								w = x->parent->right;
+								x = x->parent;
 							}
-							w->is_black = x->parent->is_black;
-							x->parent->is_black = true;
-							w->right->is_black = true;
-							_left_rotate(x->parent);
-							x = _root;
+							else
+							{
+								if (w->right->is_black)
+								{
+									w->left->is_black = true;
+									w->is_black = false;
+									_right_rotate(w);
+									w = x->parent->right;
+								}
+								w->is_black = x->parent->is_black;
+								x->parent->is_black = true;
+								if (!_is_nill(w))
+									w->right->is_black = true;
+								// std::cout << "x->is_nil: " << x->is_nil  << "\n";
+								_left_rotate(x->parent);
+								x = _root;
+							}
 						}
 					}
 					else
@@ -598,7 +604,7 @@ namespace ft {
 				while (!_is_nill(x) && !_is_header(x))
 				{
 					y = x;
-					if (new_node->data->first < x->data->first)
+					if (_compare(*new_node->data, *x->data))
 					{
 						x = x->left;
 					}
@@ -610,7 +616,7 @@ namespace ft {
 					i++;
 				}
 				new_node->parent = y;
-				if (new_node->data->first < y->data->first)
+				if (_compare(*new_node->data, *y->data)) // _change_comp
 					y->left = new_node;
 				else
 					y->right = new_node;
@@ -706,9 +712,9 @@ namespace ft {
 						y = _min(z->right);
 						origin_color = y->is_black;
 						x = y->right;
-						if (y->parent == z)
-							x->parent = y;
-						else
+						// if (y->parent == z)
+						// 	x->parent = y;
+						if (y->parent != z)
 						{
 							_rb_transplant(y, y->right);
 							y->right = z->right;
@@ -746,8 +752,14 @@ namespace ft {
 			
 			void swap(RBTree &other)
 			{
-				RBTree temp = other;
-
+				allocator_type	tmp_alloc = other._alloc;
+				node_allocator	tmp_node_alloc = _node_alloc;
+				value_compare 	tmp_compare = other._compare;
+				node_pointer	tmp_nil =other. _nil;
+				node_pointer	tmp_header = other._header;
+				node_pointer	tmp_root = other._root;
+				size_type		tmp_size = other._size;
+	
 				other._root = this->_root;
 				other._nil = this->_nil;
 				other._header = this->_header;
@@ -756,13 +768,13 @@ namespace ft {
 				other._alloc = this->_alloc;
 				other._compare = this->_compare;
 
-				this->_root = temp._root;
-				this->_nil = temp._nil;
-				this->_header = temp._header;
-				this->_size = temp._size;
-				this->_node_alloc = temp._node_alloc;
-				this->_alloc = temp._alloc;
-				this->_compare = temp._compare;
+				this->_root = tmp_root;
+				this->_nil = tmp_nil;
+				this->_header = tmp_header;
+				this->_size = tmp_size;
+				this->_node_alloc = tmp_node_alloc;
+				this->_alloc = tmp_alloc;
+				this->_compare = tmp_compare;
 			}
 
 			void clear()
@@ -809,7 +821,7 @@ namespace ft {
 				iterator last = end();
 				for (iterator it = begin(); it != last; it++)
 				{
-					if (_compare(*it, x))
+					if (!_compare(*it, x))
 						return (it);
 				}
 				return (last);
@@ -820,7 +832,7 @@ namespace ft {
 				const_iterator last = end();
 				for (const_iterator it = begin(); it != last; it++)
 				{
-					if (_compare(*it, x))
+					if (!_compare(*it, x))
 						return (it);
 				}
 				return (last);
@@ -878,12 +890,6 @@ namespace ft {
 	bool operator==(const RBTree<Content, Compare, Alloc>& lhs, const RBTree<Content, Compare, Alloc>& rhs)
 	{
 		return (lhs.size() == rhs.size() && ft::equal(lhs.begin(), lhs.end(), rhs.begin()));
-	}
-
-	template<class Content, class Compare, class Alloc>
-	void swap(const  RBTree<Content, Compare, Alloc>& lhs, const  RBTree<Content, Compare, Alloc>& rhs)
-	{
-		lhs.swap(rhs);
 	}
 };
 
