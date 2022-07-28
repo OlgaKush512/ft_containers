@@ -16,6 +16,20 @@
 
 namespace ft {
 
+	template <class Value>
+	struct Node1
+	{
+		public:
+
+			Value		*data;
+			Node1 		*parent;
+			Node1 		*left;
+			Node1 		*right;
+			bool		is_nil;
+			bool		is_black;
+	};
+
+
 	template <class Value, class Compare = std::less<Value>, class Allocator = std::allocator<Value> >
 	class RBTree
 	{
@@ -23,8 +37,9 @@ namespace ft {
 			typedef Value												value_type;
 			typedef Compare												value_compare;
 			typedef Allocator											allocator_type;
-			typedef typename Allocator::template
+			typedef typename std::allocator<Value>::template
 									rebind<Node<value_type> >::other	node_allocator;
+			typedef typename std::allocator<ft::Node<typename value_type::first_type> >		node_allocatorS;
 			typedef typename node_allocator::pointer					node_pointer;
 
 
@@ -562,7 +577,9 @@ namespace ft {
 
 			size_type max_size() const
 			{
-				return (allocator_type().max_size());
+				typedef std::allocator<Node1<Value> > allocator_type_m;
+
+				return (allocator_type_m().max_size() );
 			}
 
 			void	print_tree(node_pointer root)
