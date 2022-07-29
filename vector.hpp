@@ -133,7 +133,7 @@ namespace ft
 
 			const_reverse_iterator rend() const
 			{
-				return ((this->begin()));
+				return (const_reverse_iterator(this->begin()));
 			}
 
 			//ELEMENT ACCESS

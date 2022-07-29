@@ -8,6 +8,7 @@
 
 
 
+
 namespace ft {
 
 	template <class Value, class Compare = std::less<Value>, class Allocator = std::allocator<Value> >
@@ -177,7 +178,7 @@ namespace ft {
 
 			void	_clear_tree(node_pointer root)
 			{
-				if (!root || root->is_nil || root == _header)
+				if (!root || _is_nill(root))
 					return;
 				_clear_tree(root->left);
 				_clear_tree(root->right);
@@ -191,7 +192,7 @@ namespace ft {
 			{
 				node_pointer brother;
 
-				while (node != _root && node->is_black && !_is_nill(node))
+				while (node && node != _root && node->is_black && !_is_nill(node))
 				{
 					if (node == node->parent->left)
 					{
@@ -260,7 +261,8 @@ namespace ft {
 						}		
 					}
 				}
-				node->is_black = true;
+				if (node)
+					node->is_black = true;
 			}
 
 			// HELPERS FOR INSERTION
@@ -438,8 +440,10 @@ namespace ft {
 					insert(*first);
 			}
 
-			RBTree(const RBTree& src) :  _compare(src._compare), _size(0)
+			RBTree(const RBTree& src) : _compare(src._compare), _alloc(src._alloc), _node_alloc(src._node_alloc), _size(0)
 			{
+				_init_nil_head();
+				_root = _header;
 				*this = src;
 			}
 
@@ -778,12 +782,12 @@ namespace ft {
 
 			ft::pair<iterator, iterator> equal_range(const value_type& x)
 			{
-				return (make_pair(lower_bound(x), upper_bound(x)));
+				return (ft::make_pair(lower_bound(x), upper_bound(x)));
 			}
 
 			ft::pair<const_iterator,const_iterator> equal_range(const value_type& x) const
 			{
-				return (make_pair(lower_bound(x), upper_bound(x)));
+				return (ft::make_pair(lower_bound(x), upper_bound(x)));
 			}
 			
 

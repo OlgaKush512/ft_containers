@@ -25,11 +25,11 @@ namespace ft
 	};
 
 	template <class T>
-	class TreeIter
+	class TreeIter : public ft::iterator<std::bidirectional_iterator_tag, T>
 	{
 		public:
 
-			typedef ft::bidirectional_iterator_tag									iterator_category;
+			typedef std::bidirectional_iterator_tag									iterator_category;
 			typedef typename iterator_traits<T*>::value_type						value_type;
 			typedef typename iterator_traits<T*>::difference_type					difference_type;
 			typedef typename iterator_traits<T*>::pointer							pointer;
