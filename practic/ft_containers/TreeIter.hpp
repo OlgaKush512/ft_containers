@@ -1,12 +1,6 @@
 # ifndef TREE_ITER_HPP
 # define TREE_ITER_HPP
 
-// # include <vector>
-# include <memory>
-# include <stdexcept>
-# include <stdint.h>
-# include <iostream>
-# include <functional>
 # include "iterator.hpp"
 # include "utility.hpp"
 # include "type_traits.hpp"
@@ -28,28 +22,6 @@ namespace ft
 			Node 		*right;
 			bool		is_nil;
 			bool		is_black;
-
-		explicit Node (Value *value = 0) : data(value), parent(0), left(0),
-			right(0), is_nil(false), is_black(false) {};
-
-		Node (const Node &other) : data(other.data), parent(other.parent), left(other.left),
-			right(other.right), is_nil(other.is_nil), is_black(other.is_black) {};
-
-
-		Node&	operator = (const Node &other)
-		{
-			
-			data = other.data;
-			parent = other.parent;
-			left = other.left;
-			right = other.right;
-			is_nil = other.is_nil;
-			is_black = other.is_black;
-			return (*this);
-		}
-
-		virtual ~Node() {};
-
 	};
 
 	template <class T>
@@ -107,13 +79,12 @@ namespace ft
 
 			~TreeIter() {};
 
-		// OPERATIONS
-
-			// operator  TreeIter<const T> () const
+			// operator	TreeIter<value_type>() 
 			// {
-			// 	TreeIter<const T> citer(_node);
-			// 	return (citer);
-			// };
+			// 	return TreeIter<value_type>(_node);
+			// }
+
+		// OPERATIONS
 
 			reference operator*() const
 			{
@@ -213,13 +184,13 @@ namespace ft
 			};
 
 		// getter
-		node_pointer get_node() const
-		{
-			if (_node)
-				return _node;
-			else
-				return (NULL);
-		}
+			node_pointer get_node() const
+			{
+				if (_node)
+					return _node;
+				else
+					return (NULL);
+			}
 	};
 
 	template <typename T1, typename T2>
@@ -235,7 +206,5 @@ namespace ft
 	}
 
 };
-
-
 
 # endif

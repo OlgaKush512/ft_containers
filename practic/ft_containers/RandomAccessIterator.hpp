@@ -20,7 +20,6 @@ namespace ft
 				typedef typename iterator_traits<U*>::value_type			value_type;
 				typedef typename iterator_traits<U*>::difference_type		difference_type;
 				typedef typename iterator_traits<U*>::pointer				pointer;
-				// typedef typename iterator_traits<const U*>::const_pointer	const_pointer;
 				typedef typename iterator_traits<U*>::reference				reference;
 
 
@@ -66,11 +65,6 @@ namespace ft
 				{
 					return (_current);
 				};
-
-				// const_pointer operator->(typename ft::enable_if<!is_const<U>::value, U>::type)
-				// {
-				// 	return (const_pointer)(_current);
-				// };
 
 				template< class Iterator1 >
 				bool operator==(const Iterator1& b) const
@@ -165,20 +159,6 @@ namespace ft
 				{
 					return (!(this->base() < b.base()));
 				};
-
-				
-
-				// operator  const_pointer () const
-				// {
-				// 	const_pointer citer(_current);
-				// 	return (citer);
-				// };
-
-				// operator const value_type() const
-				// {
-				// 	const_value_type ret(*_current);
-				// 	return (ret);
-				// };
 
 			protected:
 
