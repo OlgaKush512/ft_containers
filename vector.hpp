@@ -78,13 +78,13 @@ namespace ft
 
 			//DESTRUCTOR
 
-			~vector()
+			virtual ~vector()
 			{
-				if (_cap)
-				{
-					clear();
+				clear();
+				// if (_cap)
+				// {
 					_alloc.deallocate(_array, _cap);
-				}
+				// }
 			}
 
 			// ALLOCATOR
@@ -211,16 +211,11 @@ namespace ft
 
 			void resize(size_type n, value_type value = value_type())
 			{
-				if (n > _cap)
-					reserve(n);
-				for (size_type i = _size; i < n; ++i)
-					_alloc.construct(_array + i, value);
-				if (n < _size)
-				{
-					for (size_type j = _size - (_size - n); j < _size; ++j)
-						_alloc.destroy(_array + j);
-				}
-				_size = n;
+				if (n > size())
+						insert(end(), n - size(), value);
+				else if (n < size())
+					erase(begin() + n, end());
+				return ;
 			}
 
 			bool empty() const
@@ -276,7 +271,10 @@ namespace ft
 					reserve(1);
 				else if (_cap == _size)
 				{
-					reserve(2 * _cap);
+					if (((_size + 1) % 2))
+						reserve(_cap * 2);
+					else
+						reserve(1 + _cap);
 				}
 				_alloc.construct(_array + _size, value);
 				++_size;
@@ -300,8 +298,13 @@ namespace ft
 					return (this->begin());
 				}
 				size_type res = (this->end() - pos);
-				if (_size == _cap)
-					reserve(2 * _cap);
+				if (size() + 1 > capacity())
+				{
+					if (size() > 1)
+						reserve(size() * 2);
+					else
+						reserve(size() + 1);
+				}
 				size_type pos_i = _size - res;
 				_alloc.construct(_array + _size, value);
 				for (size_type i = 0; i < res; ++i)
@@ -325,8 +328,13 @@ namespace ft
 				}
 				size_type res = (this->end() - pos);
 				size_type pos_i = _size - res;
-				if ((_size + count) > _cap)
-					reserve(_size + count);
+				if (size() + count > capacity())
+				{
+					if (size() > count)
+						reserve(size() * 2);
+					else
+						reserve(size() + count);
+				}
 				for (size_type i = 0; i < count; ++i)
 					_alloc.construct(_array + _size + i , value);
 				for (size_type i = 0; i < res; ++i)
@@ -336,28 +344,90 @@ namespace ft
 					_array[pos_i + i] = value;
 			}
 
-			template <class InputIt>
-			void insert( iterator pos, typename ft::enable_if<!is_integral<InputIt>::value, InputIt>::type first, InputIt last)
+			template <class InputIterator>
+			void insert( iterator pos, InputIterator first, InputIterator last)
 			{
-				InputIt copy_first = first;
-				size_t count = 0;
-				while (copy_first != last)
-				{
-					++count;
-					++copy_first;
-				}
-				size_type move = (this->end() - pos );
-				size_type pos_i = _size - move;
-				if ((_size + count) > _cap)
-					reserve(_size + count);
-				for (size_type i = 0; i < count; ++i)
-					_alloc.construct(_array + _size + i , value_type());
-				for (size_type i = 0; i < move; ++i)
-					_array[_size - i - 1 + count] = _array[_size - i - 1];
-				_size += count;
-				for (size_type i = 0; first != last; ++first, ++i)
-					_array[pos_i + i] = *first;
+				_insert_dispatch(pos, first, last, is_integral<InputIterator>());
 			}
+
+			template<typename InputIterator>
+			void
+			_insert_dispatch(iterator pos, InputIterator first,
+					InputIterator last, false_type)
+			{
+				_range_insert(pos, first, last);
+			}
+			template<typename Integer>
+			void
+			_insert_dispatch(iterator pos, Integer n, Integer val,
+					true_type)
+			{
+				_fill_insert(pos, n, val);
+			}
+
+			template<typename InputIterator>
+			void _range_insert(iterator pos, InputIterator first,
+					InputIterator last)
+			{
+				if (pos == end())
+				{
+					for (; first != last; ++first)
+						insert(end(), *first);
+				}
+				else if (first != last)
+				{
+					for (difference_type i = pos - begin(); first != last; ++first, ++i)
+						insert(begin() + i, *first);
+				}
+			}
+
+			void	_fill_insert(iterator position, size_type n, const value_type& val)
+			{
+				const difference_type	diff = position - begin();
+
+				if (n == 0)
+					return ;
+				if (size() + n > capacity())
+				{
+					if (size() > n)
+						reserve(size() * 2);
+					else
+						reserve(size() + n);
+				}
+				for (difference_type i = size() - 1; i >= diff; i--)
+				{
+					_alloc.construct(&_array[i + n], _array[i]);
+					_alloc.destroy(&_array[i]);
+				}
+				for (size_type i = diff; i < diff + n; i++)
+					_alloc.construct(&_array[i], val);
+				_size += n;
+			}
+
+			// template <class InputIt>
+			// void insert( iterator pos, typename ft::enable_if<!is_integral<InputIt>::value, InputIt>::type first, InputIt last)
+			// {
+			// 	if ()
+			// 		return;
+			// 	InputIt copy_first = first;
+			// 	size_t count = 0;
+			// 	while (copy_first != last)
+			// 	{
+			// 		++count;
+			// 		++copy_first;
+			// 	}
+			// 	size_type move = (this->end() - pos );
+			// 	size_type pos_i = _size - move;
+			// 	if ((_size + count) > _cap)
+			// 		reserve(_size + count);
+			// 	for (size_type i = 0; i < count; ++i)
+			// 		_alloc.construct(_array + _size + i , value_type());
+			// 	for (size_type i = 0; i < move; ++i)
+			// 		_array[_size - i - 1 + count] = _array[_size - i - 1];
+			// 	_size += count;
+			// 	for (size_type i = 0; first != last; ++first, ++i)
+			// 		_array[pos_i + i] = *first;
+			// }
 
 			// // ERASE
 			iterator erase(iterator pos)
@@ -499,6 +569,12 @@ namespace ft
 					const ft::vector<T,Alloc>& rhs)
 	{
 		return (!(lhs < rhs));
+	}
+
+	template <class T, class Alloc>
+	void swap (vector<T,Alloc>& x, vector<T,Alloc>& y)
+	{
+		return (x.swap(y));
 	}
 }
 

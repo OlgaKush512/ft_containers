@@ -1,16 +1,15 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   swap_main.cpp                                      :+:      :+:    :+:   */
+/*   insert_main.cpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: hbaudet <hbaudet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/02 13:07:06 by hbaudet           #+#    #+#             */
-/*   Updated: 2021/01/18 16:07:00 by hbaudet          ###   ########.fr       */
+/*   Updated: 2021/01/18 16:07:22 by hbaudet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-// #include "test_utils.hpp"
 #include "vector.hpp"
 #include <vector>
 
@@ -21,8 +20,6 @@
 #endif
 
 using namespace NAMESPACE;
-
-
 
 template <class T>
 void	print(vector<vector<T> >& lst)
@@ -43,128 +40,30 @@ void	print(vector<T>& lst)
 	std::cout << '\n';
 }
 
+
 int main ()
 {
-  vector<int> foo (3,100);   // three ints with a value of 100
-  vector<int> bar (5,200);   // five ints with a value of 200
+  vector<int> myvector (3,100);
+  vector<int>::iterator it;
 
-  foo.swap(bar);
+  it = myvector.begin();
+  it = myvector.insert ( it , 200 );
 
-  std::cout << "foo contains:";
-  for (unsigned i=0; i<foo.size(); i++)
-    std::cout << ' ' << foo[i];
+  myvector.insert (it,2,300);
+
+  // "it" no longer valid, get a new one:
+  it = myvector.begin();
+
+  vector<int> anothervector (2,400);
+  myvector.insert (it+2,anothervector.begin(),anothervector.end());
+
+  int myarray [] = { 501,502,503 };
+  myvector.insert (myvector.begin(), myarray, myarray+3);
+
+  std::cout << "myvector contains:";
+  for (it=myvector.begin(); it<myvector.end(); it++)
+    std::cout << ' ' << *it;
   std::cout << '\n';
-
-  std::cout << "bar contains:";
-  for (unsigned i=0; i<bar.size(); i++)
-    std::cout << ' ' << bar[i];
-  std::cout << '\n';
-
-{
-	vector<int> foo,bar;
-
-	foo.push_back(100);
-	foo.push_back(200);
-
-	bar.push_back(11);
-	bar.push_back(22);
-	bar.push_back(33);
-
-
-	vector<int>::const_iterator tmp = foo.begin(); //tmp iterates through foo
-	vector<int>::const_iterator tmp2 = bar.begin(); //tmp2 iterates through bar
-
-	swap(bar, foo); //tmp iterates through bar
-					//tmp2 iterates through foo
-
-
-	vector<int>	other;
-
-	other.push_back(73);
-	other.push_back(173);
-	other.push_back(763);
-	other.push_back(73854);
-	other.push_back(74683);
-	other.push_back(753);
-
-	vector<int>::const_iterator tmp3 = other.begin(); // tmp3 iterates through other
-
-	std::cout << "foo contains:\n";
-	for (vector<int>::iterator it=foo.begin(); it!=foo.end(); ++it)
-		std::cout << *it << '\n';
-
-	std::cout << "bar contains:\n";
-	for (ft::vector<int>::iterator it=bar.begin(); it!=bar.end(); ++it)
-		std::cout << *it << '\n';
-
-	while (tmp != bar.end())
-	{
-		std::cout << *tmp << '\n';
-		tmp++;
-	}
-	tmp--;
-
-	while(tmp2 != foo.end())
-	{
-		std::cout << *tmp2 << '\n';
-		tmp2++;
-	}
-	tmp2--;
-
-	swap(other, foo); //tmp2 iterates through other
-					//tmp3 iterates throught foo
-	print(other);
-	print(foo);
-	print(bar);
-	while(tmp != bar.begin())
-	{
-		std::cout << *tmp << '\n';
-		tmp--;
-	}
-	std::cout << *tmp << '\n';
-
-	while(tmp2 != other.begin())
-	{
-		std::cout << *tmp2 << '\n';
-		tmp2--;
-	}
-		std::cout << *tmp2 << '\n';
-
-	while(tmp3 != foo.end())
-	{
-		std::cout << *tmp3 << '\n';
-		tmp3++;
-	}
-	tmp3--;
-
-	swap(bar, foo);
-	swap(foo, bar);
-	swap(bar, foo); //tmp3 iterates through bar
-				//tmp iterates through foo
-
-	print(other);
-	print(foo);
-	print(bar);
-
-	while(tmp != foo.end())
-	{
-		std::cout << *tmp << '\n';
-		tmp++;
-	}
-
-	while(tmp2 != other.end())
-	{
-		std::cout << *tmp2 << '\n';
-		tmp2++;
-	}
-
-	while(tmp3 != bar.begin())
-	{
-		std::cout << *tmp3 << '\n';
-		tmp3--;
-	}
-		std::cout << *tmp3 << '\n';
-}
 
   return 0;
 }
