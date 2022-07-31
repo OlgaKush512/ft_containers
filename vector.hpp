@@ -32,9 +32,14 @@ namespace ft
 
 			//CONSTRUCTORS
 
-			vector() : _array(0), _size(0), _cap(0), _alloc(allocator_type()) {} ;
+			vector() : _array(0), _size(0), _cap(0), _alloc(allocator_type()) {
+				// std::cout << "const1: _cap = " << _cap << "\n";
+			} ;
 
-			explicit vector(const allocator_type& alloc) : _array(0), _size(0), _cap(0), _alloc(alloc) {} ;
+			explicit vector(const allocator_type& alloc) : _array(0), _size(0), _cap(0), _alloc(alloc)
+			{
+				// std::cout << "const2: _cap = " << _cap << "\n";
+			} ;
 
 			explicit vector(size_type count, const T& value = T(), const allocator_type& alloc = allocator_type()) : 
 			_size(count), _cap(count), _alloc(alloc)
@@ -44,16 +49,19 @@ namespace ft
 				{
 					_alloc.construct(_array + i, value);
 				}
+				// std::cout << "const3: _cap = " << _cap << "\n";
 			}
 			template< class InputIt >
-			vector( InputIt first, InputIt last, const allocator_type& alloc = allocator_type()) : _array(0), _size(0), _cap(0), _alloc(alloc)
+			vector( typename ft::enable_if<!is_integral<InputIt>::value, InputIt>::type first, InputIt last, const allocator_type& alloc = allocator_type()) : _array(0), _size(0), _cap(0), _alloc(alloc)
 			{
+				// std::cout << "const4: _cap = " << _cap << "\n";
+
 				this->assign(first, last);
 			}
 
 			//COPY CONSTRUCTOR
 
-			vector(const vector& other): _size(other._size), _cap(other._cap), _alloc(other._alloc)
+			vector(const vector& other): _size(other._size), _cap(other._size), _alloc(other._alloc)
 			{
 				_array = _alloc.allocate(_cap);
 				for (size_type i = 0; i < _size; ++i)
@@ -212,7 +220,7 @@ namespace ft
 			void resize(size_type n, value_type value = value_type())
 			{
 				if (n > size())
-						insert(end(), n - size(), value);
+					insert(end(), n - size(), value);
 				else if (n < size())
 					erase(begin() + n, end());
 				return ;
@@ -227,6 +235,8 @@ namespace ft
 
 			void reserve(size_type n)
 			{
+				if (n > _alloc.max_size())
+					throw (std::length_error(""));
 				if (n <= _cap)
 					return;
 				pointer new_arr = _alloc.allocate(n);
@@ -248,7 +258,8 @@ namespace ft
 			void assign(typename ft::enable_if<!is_integral<InputIterator>::value, InputIterator>::type first, InputIterator last)
 			{
 				size_type tmp_size = 0;
-				InputIterator copy_first = first;
+				InputIterator copy_first(first);
+				std::cout << "hey1\n";
 
 				for (; copy_first != last; ++copy_first)
 					++tmp_size;
@@ -257,6 +268,7 @@ namespace ft
 				copy_first = first;
 				for (size_type i = 0; i < tmp_size; ++i, ++copy_first)
 					*(_array + i) = *(copy_first);
+				std::cout << "hey\n";
 			}
 
 			void assign (size_type n, const value_type& val)
@@ -267,15 +279,8 @@ namespace ft
 
 			void push_back(const value_type& value)
 			{
-				if (_size == 0)
-					reserve(1);
-				else if (_cap == _size)
-				{
-					if (((_size + 1) % 2))
-						reserve(_cap * 2);
-					else
-						reserve(1 + _cap);
-				}
+				if (size() + 1 > capacity())
+					reserve(capacity() == 0 ? 1 : capacity() * 2);
 				_alloc.construct(_array + _size, value);
 				++_size;
 			}
@@ -320,12 +325,12 @@ namespace ft
 			{
 				if (count == 0)
 					return;
-				if (this->empty())
-				{
-					for (size_type i = 0; i < count; ++i)
-						push_back(value);
-					return;
-				}
+				// if (this->empty())
+				// {
+				// 	for (size_type i = 0; i < count; ++i)
+				// 		push_back(value);
+				// 	return;
+				// }
 				size_type res = (this->end() - pos);
 				size_type pos_i = _size - res;
 				if (size() + count > capacity())
