@@ -18,7 +18,7 @@ namespace ft {
 			typedef Value												value_type;
 			typedef Compare												value_compare;
 			typedef Allocator											allocator_type;
-			typedef typename std::allocator<Value>::template
+			typedef typename Allocator::template
 									rebind<Node<value_type> >::other	node_allocator;
 			typedef typename node_allocator::pointer					node_pointer;
 
@@ -561,7 +561,22 @@ namespace ft {
 
 			size_type max_size() const
 			{
-				return (node_allocator().max_size());
+
+				size_type size_Node = sizeof(Node<Value>);
+				size_type size_Node1 = sizeof(Node1<Value>);
+
+				// size_type size_pointer = sizeof(value_type*);
+				// size_type size_value = sizeof(value_type);
+				// size_type vrai_node = size_Node - size_pointer + size_value;
+
+				// double koef = size_Node / vrai_node;
+
+				// std::cout << "\nsize_Node " << size_Node << " size_pointer " << size_pointer
+				// << " size_value " << size_value << " vrai_node " << vrai_node << " koef " << koef << std::endl;
+
+				// size_t res = node_allocator().max_size();
+
+				return (node_allocator().max_size() * size_Node / size_Node1);
 			}
 
 			// modifiers:

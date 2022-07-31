@@ -24,6 +24,18 @@ namespace ft
 			bool		is_black;
 	};
 
+	template <class Value>
+	struct Node1
+	{
+		public:
+
+			Value		data;
+			Node1 		*parent;
+			Node1 		*left;
+			Node1 		*right;
+			bool		is_nil;
+	};
+
 	template <class T>
 	class TreeIter : public ft::iterator<std::bidirectional_iterator_tag, T>
 	{

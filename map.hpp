@@ -199,13 +199,13 @@ namespace ft {
 			
 			void swap(map<Key,T,Compare,Allocator>& x)
 			{
-				key_compare		tmp_compare = x._compare;
-				allocator_type	tmp_alloc = x._alloc;
+				// key_compare		tmp_compare = x._compare;
+				// allocator_type	tmp_alloc = x._alloc;
 
-				x._compare = _compare;
-				x._alloc = _alloc;
-				_compare = tmp_compare;
-				_alloc = tmp_alloc;
+				// x._compare = _compare;
+				// x._alloc = _alloc;
+				// _compare = tmp_compare;
+				// _alloc = tmp_alloc;
 
 				_tree.swap(x._tree);
 			}
