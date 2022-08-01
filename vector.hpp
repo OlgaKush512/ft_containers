@@ -220,9 +220,13 @@ namespace ft
 			void resize(size_type n, value_type value = value_type())
 			{
 				if (n > size())
+				{
 					insert(end(), n - size(), value);
+				}
 				else if (n < size())
+				{
 					erase(begin() + n, end());
+				}
 				return ;
 			}
 
@@ -236,7 +240,7 @@ namespace ft
 			void reserve(size_type n)
 			{
 				if (n > _alloc.max_size())
-					throw (std::length_error(""));
+					throw (std::length_error("vector::reserve"));
 				if (n <= _cap)
 					return;
 				pointer new_arr = _alloc.allocate(n);
@@ -257,18 +261,33 @@ namespace ft
 			template <class InputIterator>
 			void assign(typename ft::enable_if<!is_integral<InputIterator>::value, InputIterator>::type first, InputIterator last)
 			{
-				size_type tmp_size = 0;
-				InputIterator copy_first(first);
-				std::cout << "hey1\n";
+				// size_type tmp_size = 0;
+				// InputIterator copy_first(first);
+				// std::cout << "hey1\n";
 
-				for (; copy_first != last; ++copy_first)
-					++tmp_size;
-				clear();
-				resize(tmp_size);
-				copy_first = first;
-				for (size_type i = 0; i < tmp_size; ++i, ++copy_first)
-					*(_array + i) = *(copy_first);
-				std::cout << "hey\n";
+				// for (; copy_first != last; ++copy_first)
+				// 	++tmp_size;
+				// std::cout << "hey2\n";
+				// clear();
+				// std::cout << "hey3\n";
+				// resize(tmp_size);
+				// std::cout << "hey4\n";
+				// copy_first = first;
+				// std::cout << "hey5\n";
+				// for (size_type i = 0; i < tmp_size; ++i, ++copy_first)
+				// 	*(_array + i) = *(copy_first);
+				// std::cout << "hey\n";
+
+				if (capacity() == 0)
+				{
+					size_type	new_size = 0;
+
+					for (InputIterator test = first; test != last; ++test, ++new_size)
+						;
+					reserve(new_size);
+				}
+				erase(begin(), end());
+				insert(begin(), first, last);
 			}
 
 			void assign (size_type n, const value_type& val)
