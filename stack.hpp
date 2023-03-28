@@ -1,9 +1,19 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   stack.hpp                                          :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: okushnir <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/08/01 17:05:26 by okushnir          #+#    #+#             */
+/*   Updated: 2022/08/01 17:05:29 by okushnir         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 # ifndef STACK_HPP
 # define STACK_HPP
 
 # include "vector.hpp"
-// # include <vector>
-
 
 namespace ft
 {
@@ -19,15 +29,15 @@ namespace ft
 			typedef typename Container::const_reference		const_reference;
 
 
-			stack() : _c() {};
+			stack() : c() {};
 
-			explicit stack(const container_type& cont) : _c(cont) {};
+			explicit stack(const container_type& cont) : c(cont) {};
 
-			stack(const stack& other): _c(other._c) {};
+			stack(const stack& other): c(other.c) {};
 
 			stack& operator=( const stack& other )
 			{
-				_c = other._c;
+				c = other.c;
 				return (*this);
 			}
 
@@ -35,32 +45,32 @@ namespace ft
 
 			bool	empty() const
 			{
-				return (_c.empty());
+				return (c.empty());
 			};
 
 			size_type	size() const
 			{
-				return (_c.size());
+				return (c.size());
 			};
 
 			reference	top() // value_type&
 			{
-				return (_c.back());
+				return (c.back());
 			};
 
 			const_reference	top() const // const value_type&
 			{
-				return (_c.back());
+				return (c.back());
 			};
 
 			void	push(const value_type& x)
 			{
-				_c.push_back(x);
+				c.push_back(x);
 			};
 
 			void	pop()
 			{
-				_c.pop_back();
+				c.pop_back();
 			};
 
 			template< class A, class Cont >
@@ -83,44 +93,44 @@ namespace ft
 
 		protected:
 
-			container_type	_c;
+			container_type	c;
 
 	};
 
 	template< class A, class Cont >
 	bool operator==(const stack<A,Cont>& lhs, const stack<A,Cont>& rhs)
 	{
-		return (lhs._c == rhs._c);
+		return (lhs.c == rhs.c);
 	}
 
 	template< class A, class Cont >
 	bool operator!=(const stack<A,Cont>& lhs, const stack<A,Cont>& rhs)
 	{
-		return (lhs._c != rhs._c);
+		return (lhs.c != rhs.c);
 	}
 
 	template< class A, class Cont >
 	bool operator<(const stack<A,Cont>& lhs, const stack<A,Cont>& rhs)
 	{
-		return (lhs._c < rhs._c);
+		return (lhs.c < rhs.c);
 	}
 
 	template< class A, class Cont >
 	bool operator<=(const stack<A,Cont>& lhs, const stack<A,Cont>& rhs)
 	{
-		return (lhs._c <= rhs._c);
+		return (lhs.c <= rhs.c);
 	}
 
 	template< class A, class Cont >
 	bool operator>(const stack<A,Cont>& lhs, const stack<A,Cont>& rhs)
 	{
-		return (lhs._c > rhs._c);
+		return (lhs.c > rhs.c);
 	}
 
 	template< class A, class Cont >
 	bool operator>=(const stack<A,Cont>& lhs, const stack<A,Cont>& rhs)
 	{
-		return (lhs._c >= rhs._c);
+		return (lhs.c >= rhs.c);
 	}
 }
 

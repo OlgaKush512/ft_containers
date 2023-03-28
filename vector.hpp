@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   vector.hpp                                         :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: okushnir <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/08/01 17:06:55 by okushnir          #+#    #+#             */
+/*   Updated: 2022/08/01 17:06:58 by okushnir         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 # ifndef VECTOR_HPP
 # define VECTOR_HPP
 
@@ -32,14 +44,9 @@ namespace ft
 
 			//CONSTRUCTORS
 
-			vector() : _array(0), _size(0), _cap(0), _alloc(allocator_type()) {
-				// std::cout << "const1: _cap = " << _cap << "\n";
-			} ;
+			vector() : _array(0), _size(0), _cap(0), _alloc(allocator_type()) {} ;
 
-			explicit vector(const allocator_type& alloc) : _array(0), _size(0), _cap(0), _alloc(alloc)
-			{
-				// std::cout << "const2: _cap = " << _cap << "\n";
-			} ;
+			explicit vector(const allocator_type& alloc) : _array(0), _size(0), _cap(0), _alloc(alloc) {};
 
 			explicit vector(size_type count, const T& value = T(), const allocator_type& alloc = allocator_type()) : 
 			_size(count), _cap(count), _alloc(alloc)
@@ -49,13 +56,10 @@ namespace ft
 				{
 					_alloc.construct(_array + i, value);
 				}
-				// std::cout << "const3: _cap = " << _cap << "\n";
 			}
 			template< class InputIt >
 			vector( typename ft::enable_if<!is_integral<InputIt>::value, InputIt>::type first, InputIt last, const allocator_type& alloc = allocator_type()) : _array(0), _size(0), _cap(0), _alloc(alloc)
 			{
-				// std::cout << "const4: _cap = " << _cap << "\n";
-
 				this->assign(first, last);
 			}
 
@@ -89,10 +93,7 @@ namespace ft
 			virtual ~vector()
 			{
 				clear();
-				// if (_cap)
-				// {
 					_alloc.deallocate(_array, _cap);
-				// }
 			}
 
 			// ALLOCATOR
@@ -261,23 +262,6 @@ namespace ft
 			template <class InputIterator>
 			void assign(typename ft::enable_if<!is_integral<InputIterator>::value, InputIterator>::type first, InputIterator last)
 			{
-				// size_type tmp_size = 0;
-				// InputIterator copy_first(first);
-				// std::cout << "hey1\n";
-
-				// for (; copy_first != last; ++copy_first)
-				// 	++tmp_size;
-				// std::cout << "hey2\n";
-				// clear();
-				// std::cout << "hey3\n";
-				// resize(tmp_size);
-				// std::cout << "hey4\n";
-				// copy_first = first;
-				// std::cout << "hey5\n";
-				// for (size_type i = 0; i < tmp_size; ++i, ++copy_first)
-				// 	*(_array + i) = *(copy_first);
-				// std::cout << "hey\n";
-
 				if (capacity() == 0)
 				{
 					size_type	new_size = 0;
@@ -344,12 +328,6 @@ namespace ft
 			{
 				if (count == 0)
 					return;
-				// if (this->empty())
-				// {
-				// 	for (size_type i = 0; i < count; ++i)
-				// 		push_back(value);
-				// 	return;
-				// }
 				size_type res = (this->end() - pos);
 				size_type pos_i = _size - res;
 				if (size() + count > capacity())
@@ -427,31 +405,6 @@ namespace ft
 					_alloc.construct(&_array[i], val);
 				_size += n;
 			}
-
-			// template <class InputIt>
-			// void insert( iterator pos, typename ft::enable_if<!is_integral<InputIt>::value, InputIt>::type first, InputIt last)
-			// {
-			// 	if ()
-			// 		return;
-			// 	InputIt copy_first = first;
-			// 	size_t count = 0;
-			// 	while (copy_first != last)
-			// 	{
-			// 		++count;
-			// 		++copy_first;
-			// 	}
-			// 	size_type move = (this->end() - pos );
-			// 	size_type pos_i = _size - move;
-			// 	if ((_size + count) > _cap)
-			// 		reserve(_size + count);
-			// 	for (size_type i = 0; i < count; ++i)
-			// 		_alloc.construct(_array + _size + i , value_type());
-			// 	for (size_type i = 0; i < move; ++i)
-			// 		_array[_size - i - 1 + count] = _array[_size - i - 1];
-			// 	_size += count;
-			// 	for (size_type i = 0; first != last; ++first, ++i)
-			// 		_array[pos_i + i] = *first;
-			// }
 
 			// // ERASE
 			iterator erase(iterator pos)

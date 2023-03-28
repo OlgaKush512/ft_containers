@@ -1,34 +1,52 @@
+# **************************************************************************** #
+#                                                                              #
+#                                                         :::      ::::::::    #
+#    Makefile                                           :+:      :+:    :+:    #
+#                                                     +:+ +:+         +:+      #
+#    By: okushnir <marvin@42.fr>                    +#+  +:+       +#+         #
+#                                                 +#+#+#+#+#+   +#+            #
+#    Created: 2022/08/01 17:04:26 by okushnir          #+#    #+#              #
+#    Updated: 2022/08/01 17:04:31 by okushnir         ###   ########.fr        #
+#                                                                              #
+# **************************************************************************** #
+
 NAME		= 	ft_containers
 
 SRCS		=	main.cpp
+# SRCS		=	make1.cpp
 
-HEADER		=	vector.hpp itertor.hpp stack.hpp type_traits.hpp utility.hpp
+
+INCL		=	vector.hpp stack.hpp map.hpp set.hpp type_traits.hpp utility.hpp
 
 OBJS		= 	$(SRCS:.cpp=.o)
 
-DEPENDENCES	= 	$(OBJS:.o=.d)
+NAMESPACE	= -D NS=std
 
-CC			=	c++
+CC			= c++
 
-RM			= 	rm -rf
+# CPP_FLAGS	= -Wall -Wextra -Werror -g3 
+CPP_FLAGS	= -Wall -Wextra -Werror -std=c++98
 
-CFLAGS		= 	-Wall -Wextra -Werror -std=c++98 -g3
+OBJS		= ${SRCS:.cpp=.o}
 
-all:		$(NAME)
+$(NAME):	${OBJS} ${INCL}
+			${CC} ${CPP_FLAGS} ${SRCS} -o ft_containers
+			${CC} ${CPP_FLAGS} ${SRCS} $(NAMESPACE) -o std_containers
+			./ft_containers > ft_file
+			./std_containers > std_file
 
+%.o :		%.cpp
+			@${CC} ${CPP_FLAGS} -o $@ -c $<
 
-$(NAME):	$(OBJS)
-			$(CC) $(CFLAGS) -o $(NAME) $(OBJS)
+all:		${NAME}
 
-%.o : %.cpp $(HEADER)
-		$(CC) $(CFLAGS) -MMD -o $@ -c $< 
-
-clean:		
-			$(RM) $(OBJS) $(DEPENDENCES)
+clean:
+			rm -rf ${OBJS}
 
 fclean:		clean
-			$(RM) $(NAME)
+			rm -rf ${NAME} ft_containers std_containers ft_file std_file make1.o
 
-re:			fclean $(NAME)
+re:			fclean all
 
-.PHONY:		all clean fclean re
+.PHONY:
+			all clean fclean re

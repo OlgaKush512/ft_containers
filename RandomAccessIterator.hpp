@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   RandomAccessIterator.hpp                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: okushnir <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/08/01 17:04:54 by okushnir          #+#    #+#             */
+/*   Updated: 2022/08/01 17:04:56 by okushnir         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 # ifndef RANDOM_ACCESS_ITERATOR_HPP
 # define RANDOM_ACCESS_ITERATOR_HPP
 
@@ -13,6 +25,7 @@ namespace ft
 			
 			public:
 
+				typedef std::random_access_iterator_tag						iterator_category;
 				typedef typename iterator_traits<U*>::value_type			value_type;
 				typedef typename iterator_traits<U*>::difference_type		difference_type;
 				typedef typename iterator_traits<U*>::pointer				pointer;
